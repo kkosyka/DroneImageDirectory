@@ -6,8 +6,8 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import os
 import csv
-# import psycopg2
-# from psycopg2.extras import Json
+import psycopg2
+from psycopg2.extras import Json
 import json
 
 def getGPS(pathImg):
@@ -129,10 +129,11 @@ def get_lat_lon(exif_data):
 
 def main():
 	#go to folder of images
-	path = '/IMG' #can make as input late
+	path = '\IMG' #can make as input late
+	#PC "\", MAC "/"
 
 	for currImg in os.listdir(os.getcwd() + path):
-		currPath = os.getcwd() + path + "/" +  currImg
+		currPath = os.getcwd() + path + "\\" +  currImg
 		gps, camera,other = getMetadata(currPath) #		gps, camera, other = getMetadata(currPath)
 		header = []
 		values = []
@@ -147,7 +148,7 @@ def main():
 
 		if type(otherGPS) == type({}):
 			for key, value in otherGPS.iteritems():
-				print str(key) + ": " + str(value)
+				# print str(key) + ": " + str(value)
 				header.append(key)
 				values.append(str(value))
 		print
@@ -176,11 +177,20 @@ def main():
 		    writer = csv.writer(f)
 		    writer.writerow(values)
 
-		for i in range(0,61):
-			print values[i]
-			print type(values[i])
-			print
+		# for i in range(0,61):
+		# 	print values[i]
+		# 	print type(values[i])
+		# 	print
 
+
+		# x = '{}'* len(values)
+
+		# values = x.format(*values)
+
+		print "here"
+		print len(values)
+		print type(values[61])
+		# print values[61]
 		conn = psycopg2.connect("dbname='DroneImageDirectory' host='localhost' user='postgres' password='smithgis'") #(database information - database, host, user, password)
 		cur = conn.cursor()
 
@@ -188,20 +198,17 @@ def main():
 		FileName=%s AND PATH=%s AND X=%s AND Y=%s AND  GPSLongitude=%s AND  GPSLatitudeRef=%s AND  GPSAltitude=%s AND  GPSLatitude=%s AND  GPSVersionID=%s AND 
 		GPSLongitudeRef=%s AND  GPSAltitudeRef=%s AND  LightSource=%s AND  YResolution=%s AND  ResolutionUnit=%s AND  FlashPixVersion=%s AND  Make=%s AND 
 		Flash=%s AND  SceneCaptureType=%s AND  GPSInfo=%s AND  MeteringMode=%s AND  XResolution=%s AND  Contrast=%s AND  Saturation=%s AND  MakerNote=%s AND 
-		ExposureProgram=%s AND  FocalLengthIn35mmFilm=%s AND  ShutterSpeedValue=%s AND  ColorSpace=%s AND  ExifImageWidth=%s AND  XPKeywords=%s AND  ExposureBiasValue=%s AND  
-		DateTimeOriginal=%s AND  SceneType=%s AND  Software=%s AND  SubjectDistanceRange=%s AND  WhiteBalance=%s AND  CompressedBitsPerPixel=%s AND  DateTimeDigitized=%s AND FNumber=%s AND 
-		CustomRendered=%s AND  ApertureValue=%s AND  FocalLength=%s AND  ExposureMode=%s AND  ImageDescription=%s AND ComponentsConfiguration=%s AND  SubjectDistance=%s AND 
-		ExifOffset=%s AND  ExifImageHeight=%s AND ISOSpeedRatings=%s AND  Model=%s AND  DateTime=%s AND  Orientation=%s AND  ExposureTime=%s AND  FileSource=%s AND  MaxApertureValue=%s AND 
-		XPComment=%s AND  ExifInteroperabilityOffset=%s AND  Sharpness=%s AND  ExposureIndex=%s AND  GainControl=%s AND  YCbCrPositioning=%s AND  DigitalZoomRatio=%s""",
-		(values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],
-		values[15],values[16],values[17],values[18],values[19],values[20],values[21],values[22],values[23],values[24],values[25],values[26],values[27],values[28],
-		values[29],values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],values[38],values[39],values[40],values[41],values[42],
-		values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],values[51],values[52],values[53],values[54],values[55],values[56],
-		values[57],
-		values[58],
-		values[59],
-		values[60],
-		newVal))
+		ExposureProgram=%s AND  FocalLengthIn35mmFilm=%s AND  ShutterSpeedValue=%s AND  ColorSpace=%s AND  ExifImageWidth=%s AND  XPKeywords=%s AND  
+		ExposureBiasValue=%s AND  DateTimeOriginal=%s AND  SceneType=%s AND  Software=%s AND  SubjectDistanceRange=%s AND  WhiteBalance=%s AND  
+		CompressedBitsPerPixel=%s AND  DateTimeDigitized=%s AND FNumber=%s AND CustomRendered=%s AND  ApertureValue=%s AND  FocalLength=%s AND  
+		ExposureMode=%s AND  ImageDescription=%s AND ComponentsConfiguration=%s AND  SubjectDistance=%s AND ExifOffset=%s AND  ExifImageHeight=%s AND 
+		ISOSpeedRatings=%s AND  Model=%s AND  DateTime=%s AND  Orientation=%s AND  ExposureTime=%s AND  FileSource=%s AND  MaxApertureValue=%s AND 
+		XPComment=%s AND  ExifInteroperabilityOffset=%s AND  Sharpness=%s AND  ExposureIndex=%s AND  GainControl=%s AND  YCbCrPositioning=%s AND  
+		DigitalZoomRatio=%s""", (values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],
+			values[12],values[13],values[14], values[15],values[16],values[17],values[18],values[19],values[20],values[21],values[22],values[23],values[24],
+			values[25],values[26],values[27],values[28],values[29],values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],
+			values[38],values[39],values[40],values[41],values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],
+			values[51],values[52],values[53],values[54],values[55],values[56],values[57],values[58],values[59], values[60], values[61]))
 		#AND xcoor=%s AND ycoor=%s AND username=%s AND created=%s AND hashtags=%s ) """,(text, coorX, coorY, screenName, createdAt, hashtagsHolder))
 
 		if cur.fetchone()[0] == False:
@@ -211,8 +218,10 @@ def main():
 			FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset, ExifImageHeight, ISOSpeedRatings, Model, DateTime, 
 			Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment, ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio, coorgeom) 
 			VALUES
-			(%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, 
-			%s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s)""",
+			(%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,
+			%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s,
+			%s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,
+			%s,%s)""",
 			(values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],
 			values[15],values[16],values[17],values[18],values[19],values[20],values[21],values[22],values[23],values[24],values[25],values[26],values[27],values[28],
 			values[29],values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],values[38],values[39],values[40],values[41],values[42],
@@ -395,3 +404,4 @@ main()
 
 
 
+#Test
