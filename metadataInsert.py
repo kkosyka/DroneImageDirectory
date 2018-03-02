@@ -6,8 +6,8 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 import os
 import csv
-import psycopg2
-from psycopg2.extras import Json
+# import psycopg2
+# from psycopg2.extras import Json
 import json
 import datetime
 
@@ -20,17 +20,11 @@ def getGPS(pathImg):
 			decoded = TAGS.get(tag, tag)
 			if decoded == "GPSInfo":
 				gps_data = {}
-				# print value
 				for t in value.keys():
 					sub_decoded = GPSTAGS.get(t, t)
 					gps_data[sub_decoded] = value[t]
-					# print gps_data
 				exif_data[decoded] = gps_data
 
-				# gpsinfo = {}
-				# for key in exif['GPSInfo'].keys():
-				# 	decode = ExifTags.GPSTAGS.get(key,key)
-				# 	gpsinfo[decode] = exif['GPSInfo'][key]
 			else:
 				exif_data[decoded] = value
 
@@ -39,7 +33,6 @@ def getGPS(pathImg):
 
 def getCamera(pathImg):
 	exif_data = {}
-	
 	i = Image.open(pathImg)
 	info = i._getexif()
 	for tag, value in info.items():
@@ -48,13 +41,6 @@ def getCamera(pathImg):
 		if decoded == "ShutterSpeedValue" or decoded == "DateTimeOriginal" or decoded == "ApertureValue" or decoded == "FocalLength" or decoded == "SubjectDistance" or decoded == "Make" or decoded == "Model":
 			exif_data[decoded] = value
 	return exif_data
-
-
-	# FocalLength
-	# SubjectDistance
-	# Make
-	# Model
-
 
 def getOther(pathImg):
 	exif_data = {}
@@ -131,76 +117,79 @@ def get_lat_lon(exif_data):
 
 
 def main():
+	computer = raw_input("MAC? (y/n): ")
 	#go to folder of images
-	path = '\IMG' #can make as input late
 	#PC "\", MAC "/"
+	if(computer =="Y" or computer =="y" or computer == "yes"):
+		path = '/IMG' #can make as input late
+		rootdir = os.getcwd() + '/IMG'
+	else:
+		path = '\IMG' #can make as input late
+		rootdir = os.getcwd() + '\IMG'
 
-	for currImg in os.listdir(os.getcwd() + path):
-		currPath = os.getcwd() + path + "\\" +  currImg
-		gps, camera,other = getMetadata(currPath) #		gps, camera, other = getMetadata(currPath)
-		header = []
-		values = []
-		header.extend(["FileName", "PATH", "X", "Y"])
-		print
-		print "Location IMG: " + currPath
-		print
-		print "GPS Specs: "
-		lat,long, otherGPS = get_lat_lon(gps)
-		print "XY-Coor: " + str(lat) + ", " + str(long) 
-		values.extend([currImg, currPath, lat, long])
+	for subdir, dirs, files in os.walk(rootdir):
+		for currImg in files:
+			if currImg.lower().endswith((".jpg, .jpeg")):
+				print currImg
+				currPath = os.path.join(subdir, currImg)
+				gps, camera,other = getMetadata(currPath) #gps, camera, other = getMetadata(currPath)
+				header = []
+				values = []
+				header.extend(["FileName", "PATH", "X", "Y"])
+				print "Location IMG: " + currPath
+				print "GPS Specs: "
+				lat,long, otherGPS = get_lat_lon(gps)
+				print "XY-Coor: " + str(lat) + ", " + str(long) 
+				values.extend([currImg, currPath, lat, long])
 
-		if type(otherGPS) == type({}):
-			for key, value in otherGPS.iteritems():
-				# print str(key) + ": " + str(value)
-				header.append(key)
-				value = str(value).replace("'", "")
-				values.append(value)
+				if type(otherGPS) == type({}):
+					for key, value in otherGPS.iteritems():
+						header.append(key)
+						value = str(value).replace("'", "")
+						values.append(value)
 
-		for key, value in other.iteritems():
-			# print str(key) + ": " + str(value)
-			header.append(key)
-			value = str(value).replace("`","")
-			if type(value) == {}:
-				values.append(json.dumps(value))#json.dumps(value))
-			else:
-				values.append(str(value))
+				for key, value in other.iteritems():
+					header.append(key)
+					value = str(value).replace("`","")
+					if type(value) == {}:
+						values.append(json.dumps(value))#json.dumps(value))
+					else:
+						values.append(str(value))
 
+				#insert values into CSV w header: FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, GPSLongitudeRef,GPSAltitudeRef, ApertureValue, FocalLength, Make, SubjectDistance, DateTimeOriginal, Model, ShutterSpeedValue
+				with open(r'imagesCSV.csv', 'a') as f:
+				    writer = csv.writer(f)
+				    writer.writerow(values)
 
-		#insert values into CSV w header: FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, GPSLongitudeRef,GPSAltitudeRef, ApertureValue, FocalLength, Make, SubjectDistance, DateTimeOriginal, Model, ShutterSpeedValue
-		with open(r'imagesCSV.csv', 'a') as f:
-		    writer = csv.writer(f)
-		    writer.writerow(values)
+				now = datetime.datetime.now()
+				date = now.strftime("%Y-%m-%d")
 
-		now = datetime.datetime.now()
-		date = now.strftime("%Y-%m-%d")
+				# conn = psycopg2.connect("dbname='DroneImageDirectory' host='localhost' user='postgres' password='smithgis'") #(database information - database, host, user, password)
+				# cur = conn.cursor()
 
-		conn = psycopg2.connect("dbname='DroneImageDirectory' host='localhost' user='postgres' password='smithgis'") #(database information - database, host, user, password)
-		cur = conn.cursor()
+				# cur.execute("""INSERT INTO public."DroneImageDirectory"(DateAdded, FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, 
+				# 	GPSLongitudeRef, GPSAltitudeRef, LightSource, YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode, 
+				# 	XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords, 
+				# 	ExposureBiasValue, DateTimeOriginal, SceneType, Software, SubjectDistanceRange, WhiteBalance, CompressedBitsPerPixel, DateTimeDigitized, 
+				# 	FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset,
+				# 	 ExifImageHeight, ISOSpeedRatings, Model, DateTime, Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment, 
+				# 	 ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio) VALUES
+				# 	 (%s, %s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s,
+				# 	 %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s, %s)""",(date, values[0],values[1],values[2],values[3],values[4],values[5],
+				# 	 	values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],values[15],values[16],values[17],
+				# 	 	values[18],values[19],values[20],values[21],values[22],values[23],values[24],values[25],values[26],values[27],values[28],values[29],
+				# 	 	values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],values[38],values[39],values[40],values[41],
+				# 	 	values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],values[51],values[52],values[53],
+				# 	 	values[54],values[55],values[56],values[57],values[58],values[59],values[60], values[61]))
 
-		cur.execute("""INSERT INTO public."DroneImageDirectory"(DateAdded, FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, 
-			GPSLongitudeRef, GPSAltitudeRef, LightSource, YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode, 
-			XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords, 
-			ExposureBiasValue, DateTimeOriginal, SceneType, Software, SubjectDistanceRange, WhiteBalance, CompressedBitsPerPixel, DateTimeDigitized, 
-			FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset,
-			 ExifImageHeight, ISOSpeedRatings, Model, DateTime, Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment, 
-			 ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio) VALUES
-			 (%s, %s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s,
-			 %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s, %s)""",(date, values[0],values[1],values[2],values[3],values[4],values[5],
-			 	values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],values[15],values[16],values[17],
-			 	values[18],values[19],values[20],values[21],values[22],values[23],values[24],values[25],values[26],values[27],values[28],values[29],
-			 	values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],values[38],values[39],values[40],values[41],
-			 	values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],values[51],values[52],values[53],
-			 	values[54],values[55],values[56],values[57],values[58],values[59],values[60], values[61]))
-
-		cur.execute("""UPDATE public."DroneImageDirectory" SET "coorgeom" = ST_GeomFromText('POINT('||x::text||' '||y::text||')', 4326)""")
-		conn.commit()
+				# cur.execute("""UPDATE public."DroneImageDirectory" SET "coorgeom" = ST_GeomFromText('POINT('||x::text||' '||y::text||')', 4326)""")
+				# conn.commit()
+				print
 
 def test():
-		#iterate through root directory
+	#iterate through root directory
 	rootdir = os.getcwd() + '/IMG'
-	# print "hi"
 	for subdir, dirs, files in os.walk(rootdir):
-		# print "hi"
 		for file in files:
 			print subdir
 			print file
