@@ -136,7 +136,7 @@ def main():
 				header.extend(["FileName", "PATH", "X", "Y"])
 				print "Location IMG: " + currPath
 				print "GPS Specs: "
-				lat,long, otherGPS = get_lat_lon(gps)
+				lat, long, otherGPS = get_lat_lon(gps)
 				print "XY-Coor: " + str(lat) + ", " + str(long) 
 				values.extend([currImg, currPath, lat, long])
 
@@ -178,7 +178,7 @@ def main():
 					 	values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],values[51],values[52],values[53],
 				 	 	values[54],values[55],values[56],values[57],values[58],values[59],values[60], values[61]))
 
-				cur.execute("""UPDATE public."DroneImageDirectory" SET "coorgeom" = ST_GeomFromText('POINT('||x::text||' '||y::text||')', 4326)""")
+				cur.execute("""UPDATE public."DroneImageDirectory" SET "coorgeom" = ST_GeomFromText('POINT('||y::text||' '||x::text||')', 4326)""")
 				conn.commit()
 				print
 
