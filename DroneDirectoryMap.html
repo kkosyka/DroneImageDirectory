@@ -1,0 +1,166 @@
+<!-- Kalynn Kosyka 
+Drone Directory Map
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DRONE DIRECTORY MAP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
+<body style="text-align: center">
+    <h1 style="text-align: center";>SMITH CAMPUS DIRECTORY</h1>
+    <form action="indexQuery.html" style="text-align: center">
+        <button>New Query</button>
+    </form></br>
+    <div id="mapid" style="width: 100%; height: 450px;"></div>
+    <h3 style="text-align: center";>RESULTS</h3>
+        <i><h3 style="text-align: center"; id="countResults"> 0 records found </h3></i>
+    <div style="text-align: left; overflow-y: scroll; height:400px;">
+        <ul style="-moz-column-count: 3; -webkit-column-count: 3; column-count: 3;">
+            <p id="listResults" >No Results.</p>
+        </ul>
+    </div>
+</body>
+<script>
+
+    var mymap = L.map('mapid').setView([42.318088, -72.638125], 15);
+    L.tileLayer.wms('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        id: 'mapbox.streets'
+
+    }).addTo(mymap);
+
+    // var values = window.location.href.split("?")[1].split("&");
+    // var building = "";
+    // var displayNameSearch = values[0].split("=")[1].replace("%20", " ").replace("+", " ").toLowerCase();
+    // var deptAggSearch = values[1].split("=")[1].toLowerCase();
+    // var personTypeAggSearch = [];
+
+    // var count = 0;
+    // for(var i = 2; i< 5; i++){
+    //     if(values[i]!= null){
+    //         count++;
+    //         console.log(values[i].split("=")[1])
+    //         personTypeAggSearch.push("'" + values[i].split("=")[1] + "'")
+    //     }
+    // }
+    // if(count ==0){
+    //     // personTypeAggSearch.push("'Faculty'", "'Student'", "'Staff'";
+    //     //db has specific values in person stype
+    //     personTypeAggSearch.push("'Student  Staff'", "'Staff'", "'Student Faculty Staff'", "'Student Faculty'", "'Faculty'", "'Faculty Staff'");
+    // }
+    // personTypeAggSearch = personTypeAggSearch.join(",");
+
+    // console.log(personTypeAggSearch);
+
+    // http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:DroneImageDirectory&styles=&bbox=42.3149871826172,-72.6431503295898,42.3173332214355,-72.6405563354492&width=694&height=768&srs=EPSG:4326&format=application/openlayers
+    var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs';;
+    var defaultParameters = { //see if one can define geom column...
+        service : 'WFS',
+        version : '2.0', //2.0
+        request : 'GetFeature', //'GetFeature',
+        typeName : 'DroneDirectory:DroneImageDirectory',//'SmithDirectoryGeomCenter:campusdirectorygeomcenter',
+        maxFeatures: 1000000,
+        format: 'image/png',
+        transparent: true,
+        outputFormat :'text/javascript',
+        format_options : 'callback:getJson',
+        SrsName : 'EPSG:4326'
+        // cql_filter: "strToLowerCase(display_name) LIKE '%"+displayNameSearch+"%' AND strToLowerCase(dept_agg) LIKE '%"+deptAggSearch+"%' AND strToLowerCase(campus_address) LIKE '%"+building+"%' AND person_type_agg in ("+personTypeAggSearch +")"
+    };
+    var results = [];
+    var parameters = L.Util.extend(defaultParameters);
+    var URL = rootUrl + L.Util.getParamString(parameters);
+    var count = 0;
+    var WFSLayer = null;
+    var ajax =$.ajax({
+        url : URL,
+        dataType : 'JSONP',
+        jsonpCallback : 'getJson',
+        success : function (response) {
+        WFSLayer = L.geoJson(response, {
+        style: function (feature) {
+            return {
+                fillColor: 'FFFFFF',
+                fillOpacity: 0,
+                color: '#ff7800',
+                weight: 5,
+                opacity: 1
+            };
+        },
+        //create points instead of drop pins
+        pointToLayer: function(feature, latlng){
+            console.log(latlng)
+            return new L.CircleMarker(latlng ,{
+                radius: 2,
+                fillColor: "#A3C990", //TODO figure out color...
+                color: "#FF0000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 1
+            });
+        },
+        onEachFeature: function (feature, layer) {
+            count++;
+            popupOptions = {maxWidth: 500};
+            console.log(feature.properties.dateadded)
+            // results.push("<div style='-webkit-column-break-inside: avoid;'><b>Date Added: </b><a href='DroneDirectoryMap.html?dateadded="+feature.properties.dateadded+"</div>");
+
+            layer.bindPopup("<b>Date Added: </b>" + feature.properties.dateadded + "</b>",
+            popupOptions);
+            }
+
+        }).addTo(mymap);
+            console.log(count);
+            document.getElementById("countResults").innerHTML = count + " records found";
+            console.log(results);
+            document.getElementById("listResults").innerHTML = results.join(" ");
+        }
+    });
+
+    function handleJson(data) {
+        console.log(data);		
+        var myStyle = {
+            "color": "#ff7800",
+            "weight": 5,
+            "opacity": 1,
+            onEachFeature: onEachFeature // allows you to access individual buildings (i.e. for popups)
+        };
+        var mylayer = L.geoJson(data).addTo(mymap, myStyle);
+    }
+</script>
+</html>
+
+<!-- 
+
+create table directoryGeom as
+(select * from
+public.campusdirectory1 directory
+left outer join public."CampusBuildings" building on
+(directory.building = building.building_name))
+// "strToLowerCase(first_name) LIKE '%"+firstNameSearch+"%' AND strToLowerCase(last_name) LIKE '%"+lastNameSearch+"%' AND strToLowerCase(display_name) LIKE '%"+displayNameSearch+"%' AND strToLowerCase(dept_agg) LIKE '%"+deptAggSearch+"%'"
+
+SELECT  *
+    FROM public.test as t1
+    left join public."CampusBuildings" as t2 on t1.building = t2.building_name
+    where dept_agg like '%Admissi%';
+
+create table CampusDirectoryGeomCenter as
+(SELECT  t1.campus_address, t1.campus_extension, t1.dept_agg, t1.dept_url_agg, t1.display_class_year, t1.display_name, t1.email, t1.first_name, t1.image_id, t1.last_name, t1.mailbox,t1.node_indentifier, t1.person_type_agg, t1.pref_first, t1.title_dept, t1.building, t2.geom_center, t1.building_area
+    FROM public.test as t1
+    left join public."CampusBuildings" as t2 on t1.building = t2.building_name)
+;
+
+
+
+
+
+-->
