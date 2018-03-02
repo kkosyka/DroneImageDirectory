@@ -2,6 +2,7 @@ CREATE EXTENSION postgis;
 
 -- Please create column(s) first...
 ALTER TABLE public."DroneImageDirectory"
+ADD COLUMN DateAdded DATE,
 ADD COLUMN FileName VARCHAR, 
 ADD COLUMN PATH VARCHAR, 
 ADD COLUMN X NUMERIC, 

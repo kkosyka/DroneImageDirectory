@@ -9,6 +9,7 @@ import csv
 import psycopg2
 from psycopg2.extras import Json
 import json
+import datetime
 
 def getGPS(pathImg):
 	exif_data = {}
@@ -58,6 +59,8 @@ def getCamera(pathImg):
 def getOther(pathImg):
 	exif_data = {}
 	headers = ['LightSource', 'YResolution', 'ResolutionUnit', 'FlashPixVersion', 'Make', 'Flash', 'SceneCaptureType', 'GPSInfo', 'MeteringMode', 'XResolution', 'Contrast', 'Saturation', 'MakerNote', 'ExposureProgram', 'FocalLengthIn35mmFilm', 'ShutterSpeedValue', 'ColorSpace', 'ExifImageWidth', 'XPKeywords', 'ExposureBiasValue', 'DateTimeOriginal', 'SceneType', 'Software', 'SubjectDistanceRange', 'WhiteBalance', 'CompressedBitsPerPixel', 'DateTimeDigitized', 'FNumber', 'CustomRendered', 'ApertureValue', 'FocalLength', 'ExposureMode', 'ImageDescription', 'ComponentsConfiguration', 'SubjectDistance', 'ExifOffset', 'ExifImageHeight', 'ISOSpeedRatings', 'Model', 'DateTime', 'Orientation', 'ExposureTime', 'FileSource', 'MaxApertureValue', 'XPComment', 'ExifInteroperabilityOffset', 'Sharpness', 'ExposureIndex', 'GainControl', 'YCbCrPositioning', 'DigitalZoomRatio']
+	#['LightSource', 'YResolution', 'ResolutionUnit', 'FlashPixVersion', 'Make', 'Flash', 'SceneCaptureType', 'GPSInfo', 'MeteringMode', 'XResolution', 'Contrast', 'Saturation', 'MakerNote', 'ExposureProgram', 'FocalLengthIn35mmFilm', 'ShutterSpeedValue', 'ColorSpace', 'ExifImageWidth', 'XPKeywords', 'ExposureBiasValue', 'DateTimeOriginal', 'SceneType', 'Software', 'SubjectDistanceRange', 'WhiteBalance', 'CompressedBitsPerPixel', 'DateTimeDigitized', 'FNumber', 'CustomRendered', 'ApertureValue', 'FocalLength', 'ExposureMode', 'ImageDescription', 'ComponentsConfiguration', 'SubjectDistance', 'ExifOffset', 'ExifImageHeight', 'ISOSpeedRatings', 'Model', 'DateTime', 'Orientation', 'ExposureTime', 'FileSource', 'MaxApertureValue', 'XPComment', 'ExifInteroperabilityOffset', 'Sharpness', 'ExposureIndex', 'GainControl', 'YCbCrPositioning', 'DigitalZoomRatio']
+	
 	i = Image.open(pathImg)
 	info = i._getexif()
 	for tag, value in info.items():
@@ -150,88 +153,47 @@ def main():
 			for key, value in otherGPS.iteritems():
 				# print str(key) + ": " + str(value)
 				header.append(key)
-				values.append(str(value))
-		print
+				value = str(value).replace("'", "")
+				values.append(value)
 
-		# print "Camera Specs: "
-		# print len(camera)
-		# for key, value in camera.iteritems():
-		# 	print str(key) + ": " + str(value)
-		# 	header.append(key)
-		# 	values.append(value)
-		# print "original"
-
-		# print other
 		for key, value in other.iteritems():
 			# print str(key) + ": " + str(value)
 			header.append(key)
+			value = str(value).replace("`","")
 			if type(value) == {}:
-				values.append(json.dumps(value))
+				values.append(json.dumps(value))#json.dumps(value))
 			else:
 				values.append(str(value))
 
-		print "\n--------------------------\n"
 
 		#insert values into CSV w header: FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, GPSLongitudeRef,GPSAltitudeRef, ApertureValue, FocalLength, Make, SubjectDistance, DateTimeOriginal, Model, ShutterSpeedValue
 		with open(r'imagesCSV.csv', 'a') as f:
 		    writer = csv.writer(f)
 		    writer.writerow(values)
 
-		# for i in range(0,61):
-		# 	print values[i]
-		# 	print type(values[i])
-		# 	print
+		now = datetime.datetime.now()
+		date = now.strftime("%Y-%m-%d")
 
-
-		# x = '{}'* len(values)
-
-		# values = x.format(*values)
-
-		print "here"
-		print len(values)
-		print type(values[61])
-		# print values[61]
 		conn = psycopg2.connect("dbname='DroneImageDirectory' host='localhost' user='postgres' password='smithgis'") #(database information - database, host, user, password)
 		cur = conn.cursor()
 
-		cur.execute("""SELECT EXISTS(SELECT 1 FROM public."DroneImageDirectory" WHERE text=%s AND 
-		FileName=%s AND PATH=%s AND X=%s AND Y=%s AND  GPSLongitude=%s AND  GPSLatitudeRef=%s AND  GPSAltitude=%s AND  GPSLatitude=%s AND  GPSVersionID=%s AND 
-		GPSLongitudeRef=%s AND  GPSAltitudeRef=%s AND  LightSource=%s AND  YResolution=%s AND  ResolutionUnit=%s AND  FlashPixVersion=%s AND  Make=%s AND 
-		Flash=%s AND  SceneCaptureType=%s AND  GPSInfo=%s AND  MeteringMode=%s AND  XResolution=%s AND  Contrast=%s AND  Saturation=%s AND  MakerNote=%s AND 
-		ExposureProgram=%s AND  FocalLengthIn35mmFilm=%s AND  ShutterSpeedValue=%s AND  ColorSpace=%s AND  ExifImageWidth=%s AND  XPKeywords=%s AND  
-		ExposureBiasValue=%s AND  DateTimeOriginal=%s AND  SceneType=%s AND  Software=%s AND  SubjectDistanceRange=%s AND  WhiteBalance=%s AND  
-		CompressedBitsPerPixel=%s AND  DateTimeDigitized=%s AND FNumber=%s AND CustomRendered=%s AND  ApertureValue=%s AND  FocalLength=%s AND  
-		ExposureMode=%s AND  ImageDescription=%s AND ComponentsConfiguration=%s AND  SubjectDistance=%s AND ExifOffset=%s AND  ExifImageHeight=%s AND 
-		ISOSpeedRatings=%s AND  Model=%s AND  DateTime=%s AND  Orientation=%s AND  ExposureTime=%s AND  FileSource=%s AND  MaxApertureValue=%s AND 
-		XPComment=%s AND  ExifInteroperabilityOffset=%s AND  Sharpness=%s AND  ExposureIndex=%s AND  GainControl=%s AND  YCbCrPositioning=%s AND  
-		DigitalZoomRatio=%s""", (values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],
-			values[12],values[13],values[14], values[15],values[16],values[17],values[18],values[19],values[20],values[21],values[22],values[23],values[24],
-			values[25],values[26],values[27],values[28],values[29],values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],
-			values[38],values[39],values[40],values[41],values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],
-			values[51],values[52],values[53],values[54],values[55],values[56],values[57],values[58],values[59], values[60], values[61]))
-		#AND xcoor=%s AND ycoor=%s AND username=%s AND created=%s AND hashtags=%s ) """,(text, coorX, coorY, screenName, createdAt, hashtagsHolder))
+		cur.execute("""INSERT INTO public."DroneImageDirectory"(DateAdded, FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, 
+			GPSLongitudeRef, GPSAltitudeRef, LightSource, YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode, 
+			XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords, 
+			ExposureBiasValue, DateTimeOriginal, SceneType, Software, SubjectDistanceRange, WhiteBalance, CompressedBitsPerPixel, DateTimeDigitized, 
+			FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset,
+			 ExifImageHeight, ISOSpeedRatings, Model, DateTime, Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment, 
+			 ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio) VALUES
+			 (%s, %s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s,
+			 %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s, %s)""",(date, values[0],values[1],values[2],values[3],values[4],values[5],
+			 	values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],values[15],values[16],values[17],
+			 	values[18],values[19],values[20],values[21],values[22],values[23],values[24],values[25],values[26],values[27],values[28],values[29],
+			 	values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],values[38],values[39],values[40],values[41],
+			 	values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],values[51],values[52],values[53],
+			 	values[54],values[55],values[56],values[57],values[58],values[59],values[60], values[61]))
 
-		if cur.fetchone()[0] == False:
-			cur.execute("""INSERT INTO public."DroneImageDirectory"(FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, GPSLongitudeRef, GPSAltitudeRef, LightSource, 
-			YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode, XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, 
-			ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords, ExposureBiasValue, DateTimeOriginal, SceneType, Software, SubjectDistanceRange, WhiteBalance, CompressedBitsPerPixel, DateTimeDigitized, 
-			FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset, ExifImageHeight, ISOSpeedRatings, Model, DateTime, 
-			Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment, ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio, coorgeom) 
-			VALUES
-			(%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,
-			%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s,
-			%s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,
-			%s,%s)""",
-			(values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],
-			values[15],values[16],values[17],values[18],values[19],values[20],values[21],values[22],values[23],values[24],values[25],values[26],values[27],values[28],
-			values[29],values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],values[38],values[39],values[40],values[41],values[42],
-			values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],values[51],values[52],values[53],values[54],values[55],values[56],
-			values[57],values[58],values[59],values[60],values[61]))
-		#Using and converting coordinate values into geometry value with SRID 4326
 		cur.execute("""UPDATE public."DroneImageDirectory" SET "coorgeom" = ST_GeomFromText('POINT('||x::text||' '||y::text||')', 4326)""")
 		conn.commit()
-
-
 
 def test():
 		#iterate through root directory
@@ -276,6 +238,25 @@ def main2():
 
 main()
 
+
+'''
+		cur.execute("""SELECT EXISTS(SELECT 1 FROM public."DroneImageDirectory" WHERE 
+			FileName=%s AND PATH=%s AND X=%s AND Y=%s AND  GPSLongitude=%s AND  GPSLatitudeRef=%s AND  GPSAltitude=%s AND  GPSLatitude=%s AND  GPSVersionID=%s AND 
+			GPSLongitudeRef=%s AND  GPSAltitudeRef=%s AND  LightSource=%s AND  YResolution=%s AND  ResolutionUnit=%s AND  FlashPixVersion=%s AND  Make=%s AND 
+			Flash=%s AND  SceneCaptureType=%s AND  GPSInfo=%s AND  MeteringMode=%s AND  XResolution=%s AND  Contrast=%s AND  Saturation=%s AND  MakerNote=%s AND 
+			ExposureProgram=%s AND  FocalLengthIn35mmFilm=%s AND  ShutterSpeedValue=%s AND  ColorSpace=%s AND  ExifImageWidth=%s AND  XPKeywords=%s AND  
+			ExposureBiasValue=%s AND  DateTimeOriginal=%s AND  SceneType=%s AND  Software=%s AND  SubjectDistanceRange=%s AND  WhiteBalance=%s AND  
+			CompressedBitsPerPixel=%s AND  DateTimeDigitized=%s AND FNumber=%s AND CustomRendered=%s AND  ApertureValue=%s AND  FocalLength=%s AND  
+			ExposureMode=%s AND  ImageDescription=%s AND ComponentsConfiguration=%s AND  SubjectDistance=%s AND ExifOffset=%s AND  ExifImageHeight=%s AND 
+			ISOSpeedRatings=%s AND  Model=%s AND  DateTime=%s AND  Orientation=%s AND  ExposureTime=%s AND  FileSource=%s AND  MaxApertureValue=%s AND 
+			XPComment=%s AND  ExifInteroperabilityOffset=%s AND  Sharpness=%s AND  ExposureIndex=%s AND  GainControl=%s AND  YCbCrPositioning=%s""",
+			(values[0],values[1],values[2],values[3],values[4],values[5],values[6],values[7],values[8],values[9],values[10],values[11],
+			values[12],values[13],values[14], values[15],values[16],values[17],values[18],values[19],values[20],values[21],values[22],values[23],values[24],
+			values[25],values[26],values[27],values[28],values[29],values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],
+			values[38],values[39],values[40],values[41],values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],
+			values[51],values[52],values[53],values[54],values[55],values[56],values[57],values[58],values[59], values[60]))
+		#AND xcoor=%s AND ycoor=%s AND username=%s AND created=%s AND hashtags=%s ) ,(text, coorX, coorY, screenName, createdAt, hashtagsHolder))
+'''
 
 #FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, GPSLongitudeRef, GPSAltitudeRef, LightSource, YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode, XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords, ExposureBiasValue, DateTimeOriginal, SceneType, Software, SubjectDistanceRange, WhiteBalance, CompressedBitsPerPixel, DateTimeDigitized, FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset, ExifImageHeight, ISOSpeedRatings, Model, DateTime, Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment, ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio
 
