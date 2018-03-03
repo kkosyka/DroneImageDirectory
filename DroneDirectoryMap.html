@@ -13,15 +13,15 @@ Drone Directory Map
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 <body style="text-align: center">
-    <h1 style="text-align: center";>SMITH CAMPUS DIRECTORY</h1>
+    <h1 style="text-align: center";>DRONE IMAGE DIRECTORY</h1>
     <form action="indexQuery.html" style="text-align: center">
         <button>New Query</button>
     </form></br>
     <div id="mapid" style="width: 100%; height: 450px;"></div>
     <h3 style="text-align: center";>RESULTS</h3>
         <i><h3 style="text-align: center"; id="countResults"> 0 records found </h3></i>
-    <div style="text-align: left; overflow-y: scroll; height:400px;">
-        <ul style="-moz-column-count: 3; -webkit-column-count: 3; column-count: 3;">
+    <div style="text-align: left; overflow-y: scroll height:400px;">
+        <ul style="-moz-column-count: 2; -webkit-column-count: 2; column-count: 2;">
             <p id="listResults" >No Results.</p>
         </ul>
     </div>
@@ -38,42 +38,24 @@ Drone Directory Map
 
     }).addTo(mymap);
 
-    // var values = window.location.href.split("?")[1].split("&");
-    // var building = "";
-    // var displayNameSearch = values[0].split("=")[1].replace("%20", " ").replace("+", " ").toLowerCase();
-    // var deptAggSearch = values[1].split("=")[1].toLowerCase();
-    // var personTypeAggSearch = [];
-
-    // var count = 0;
-    // for(var i = 2; i< 5; i++){
-    //     if(values[i]!= null){
-    //         count++;
-    //         console.log(values[i].split("=")[1])
-    //         personTypeAggSearch.push("'" + values[i].split("=")[1] + "'")
-    //     }
-    // }
-    // if(count ==0){
-    //     // personTypeAggSearch.push("'Faculty'", "'Student'", "'Staff'";
-    //     //db has specific values in person stype
-    //     personTypeAggSearch.push("'Student  Staff'", "'Staff'", "'Student Faculty Staff'", "'Student Faculty'", "'Faculty'", "'Faculty Staff'");
-    // }
-    // personTypeAggSearch = personTypeAggSearch.join(",");
-
-    // console.log(personTypeAggSearch);
+    var values = window.location.href.split("?")[1].split("&");
+    filename = values[0].split("=")[1].toLowerCase();
 
     // http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:DroneImageDirectory&styles=&bbox=42.3149871826172,-72.6431503295898,42.3173332214355,-72.6405563354492&width=694&height=768&srs=EPSG:4326&format=application/openlayers
+
     var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs';;
-    var defaultParameters = { //see if one can define geom column...
+    var defaultParameters = { 
         service : 'WFS',
-        version : '2.0', //2.0
-        request : 'GetFeature', //'GetFeature',
-        typeName : 'DroneDirectory:DroneImageDirectory',//'SmithDirectoryGeomCenter:campusdirectorygeomcenter',
+        version : '2.0', 
+        request : 'GetFeature',
+        typeName : 'DroneDirectory:DroneImageDirectory',
         maxFeatures: 1000000,
         format: 'image/png',
         transparent: true,
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
-        SrsName : 'EPSG:4326'
+        SrsName : 'EPSG:4326',
+        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%'"
         // cql_filter: "strToLowerCase(display_name) LIKE '%"+displayNameSearch+"%' AND strToLowerCase(dept_agg) LIKE '%"+deptAggSearch+"%' AND strToLowerCase(campus_address) LIKE '%"+building+"%' AND person_type_agg in ("+personTypeAggSearch +")"
     };
     var results = [];
@@ -98,7 +80,6 @@ Drone Directory Map
         },
         //create points instead of drop pins
         pointToLayer: function(feature, latlng){
-            console.log(latlng)
             return new L.CircleMarker(latlng ,{
                 radius: 2,
                 fillColor: "#A3C990", //TODO figure out color...
@@ -111,23 +92,20 @@ Drone Directory Map
         onEachFeature: function (feature, layer) {
             count++;
             popupOptions = {maxWidth: 500};
-            console.log(feature.properties.dateadded)
-            // results.push("<div style='-webkit-column-break-inside: avoid;'><b>Date Added: </b><a href='DroneDirectoryMap.html?dateadded="+feature.properties.dateadded+"</div>");
-
-            layer.bindPopup("<b>Date Added: </b>" + feature.properties.dateadded + "</b>",
+            results.push("<div style='-webkit-column-break-inside: avoid;'><b>FILE NAME: </b><a href='DroneDirectoryMap.html?filename="+feature.properties.filename+"'>"+ feature.properties.filename+"</a></br></br><b>DATE ADDED:</b> "+feature.properties.dateadded.replace("Z", "")+"</br><b>DATE TIME:</b> "+feature.properties.datetime+"</br><b>PATH:</b> "+feature.properties.path+"</br><b>X:</b> "+feature.properties.x+"</br><b>Y:</b> "+feature.properties.y+"</br><b>MAKE:</b> "+feature.properties.make+"</br><b>MODEL:</b> "+feature.properties.model+"</br></br></div>");
+            layer.bindPopup("<b>File Name: </b>" + feature.properties.filename + "</br><b>PATH:</b> "+feature.properties.path+"</br><b>X-Y: </b>" + feature.properties.x + ", " + feature.properties.y + "</b>",
             popupOptions);
             }
 
         }).addTo(mymap);
             console.log(count);
             document.getElementById("countResults").innerHTML = count + " records found";
-            console.log(results);
+            console.log("RESULTS:" + results);
             document.getElementById("listResults").innerHTML = results.join(" ");
         }
     });
 
-    function handleJson(data) {
-        console.log(data);		
+    function handleJson(data) {	
         var myStyle = {
             "color": "#ff7800",
             "weight": 5,
