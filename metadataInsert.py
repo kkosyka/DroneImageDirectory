@@ -181,6 +181,9 @@ def main():
 				cur.execute("""UPDATE public."DroneImageDirectory" SET "coorgeom" = ST_GeomFromText('POINT('||y::text||' '||x::text||')', 4326)""")
 				conn.commit()
 				print
+			else:
+				print "Cannot extract EXIF data from: " + currImg
+				print
 
 main()
 
