@@ -40,10 +40,28 @@ Drone Directory Map
 
     var values = window.location.href.split("?")[1].split("&");
     filename = values[0].split("=")[1].toLowerCase();
+    xcoor = values[1].split("=")[1];
+
+    ycoor = values[2].split("=")[1];
+    range = values[3].split("=")[1];
+    if(range == "5"){
+        rangeMeter = 5;
+    }
+    else if (range == "10"){
+        rangeMeter = 10;
+    }
+    else if (range == "15"){
+        rangeMeter = 15;
+    }else{
+        rangeMeter = "1000";//to capture all
+    }
+
+    console.log(xcoor + " " + ycoor + " " + range)
+    console.log(xcoor-rangeMeter)
 
     // http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:DroneImageDirectory&styles=&bbox=42.3149871826172,-72.6431503295898,42.3173332214355,-72.6405563354492&width=694&height=768&srs=EPSG:4326&format=application/openlayers
 
-    var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs';;
+    var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs';
     var defaultParameters = { 
         service : 'WFS',
         version : '2.0', 
@@ -55,7 +73,7 @@ Drone Directory Map
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
         SrsName : 'EPSG:4326',
-        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%'"
+        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND x BETWEEN " +(xcoor-rangeMeter)+ " AND " + (xcoor+rangeMeter)+" AND y BETWEEN "+(ycoor-rangeMeter)+" AND "+ (ycoor+rangeMeter)
         // cql_filter: "strToLowerCase(display_name) LIKE '%"+displayNameSearch+"%' AND strToLowerCase(dept_agg) LIKE '%"+deptAggSearch+"%' AND strToLowerCase(campus_address) LIKE '%"+building+"%' AND person_type_agg in ("+personTypeAggSearch +")"
     };
     var results = [];
@@ -100,7 +118,7 @@ Drone Directory Map
         }).addTo(mymap);
             console.log(count);
             document.getElementById("countResults").innerHTML = count + " records found";
-            console.log("RESULTS:" + results);
+            // console.log("RESULTS:" + results);
             document.getElementById("listResults").innerHTML = results.join(" ");
         }
     });
