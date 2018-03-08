@@ -115,8 +115,16 @@ def get_lat_lon(exif_data):
                 lon = 0 - lon
     return lat, lon, gps
 
+def delete():
+	delete = raw_input("Delete all records? (y/n): ")
+	if(delete =="Y" or delete =="y" or delete == "yes"):
+		conn = psycopg2.connect("dbname='DroneImageDirectory' host='localhost' user='postgres' password='smithgis'") #(database information - database, host, user, password)
+		cur = conn.cursor()
+		cur.execute('''DELETE FROM public."DroneImageDirectory"c''')
+		conn.commit()
 
 def main():
+	delete()
 	computer = raw_input("MAC? (y/n): ")
 	#go to folder of images
 	#PC "\", MAC "/"
