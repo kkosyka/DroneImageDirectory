@@ -56,11 +56,39 @@ Drone Directory Map
         rangeMeter = "1000";//to capture all
     }
 
-    console.log(xcoor + " " + ycoor + " " + range)
-    console.log(xcoor-rangeMeter)
+
+    var NWlat = values[4].split("=")[1];
+    console.log(NWlat == "");
+    if (NWlat == ""){
+        NWlat = "x"
+    }
+    var NWlong = values[5].split("=")[1];
+    if (NWlong == ""){
+        NWlong = "y"
+    }
+    var NElat = values[6].split("=")[1];
+    var NElong = values[7].split("=")[1];
+    if (NElong == ""){
+        NElong = "y"
+    }
+    var SWlat = values[8].split("=")[1];
+    if (SWlat == ""){
+        SWlat = "x"
+    }
+    var SWlong = values[9].split("=")[1];
+    var SElat = values[10].split("=")[1];
+    var SElong = values[11].split("=")[1];
+
+
+    console.log(NWlat + "," + NWlong + " " + NElat + "," + NElong)
+    console.log(SWlat + "," + SWlong + " " + SElat + "," + SElong)
 
     // http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:DroneImageDirectory&styles=&bbox=42.3149871826172,-72.6431503295898,42.3173332214355,-72.6405563354492&width=694&height=768&srs=EPSG:4326&format=application/openlayers
 
+//42.31520108333333, -72.64107416666667
+
+    var test = "x";
+    var test2 = "y";
     var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs';
     var defaultParameters = { 
         service : 'WFS',
@@ -73,7 +101,8 @@ Drone Directory Map
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
         SrsName : 'EPSG:4326',
-        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND x BETWEEN " +(xcoor-rangeMeter)+ " AND " + (xcoor+rangeMeter)+" AND y BETWEEN "+(ycoor-rangeMeter)+" AND "+ (ycoor+rangeMeter)
+        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
+
         // cql_filter: "strToLowerCase(display_name) LIKE '%"+displayNameSearch+"%' AND strToLowerCase(dept_agg) LIKE '%"+deptAggSearch+"%' AND strToLowerCase(campus_address) LIKE '%"+building+"%' AND person_type_agg in ("+personTypeAggSearch +")"
     };
     var results = [];

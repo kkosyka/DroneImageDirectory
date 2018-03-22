@@ -11,6 +11,21 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 <head>
 	<title>QUERY FOR DRONE IMAGE DIRECTORY</title>
 </head>
+
+	<style>
+		/* Always set the map height explicitly to define the size of the div
+		* element that contains the map. */
+		#map {
+			height: 70%;
+		}
+		/* Optional: Makes the sample page fill the window. */
+		html, body {
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+
 <body>
 	<h1 style="text-align: center;">QUERY FOR DRONE IMAGE DIRECTORY</h1>
 	<!-- HTML for SEARCH BAR -->
@@ -24,6 +39,7 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 			<input type="text"  name="xcoor" maxlength="120" style="font-size: 25px;">
 			Y-Coor
 			<input type="text"  name="ycoor" maxlength="120" style="font-size: 25px;">
+			<br/>
 			Range
 			<select name="range">
 				<option value="">Select Range</option>
@@ -34,10 +50,100 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 			<br/><br/>
 			<br/>
 			<br/>
+			<br/>
 			</br>
+			NWLat<input type="text" id="NWlat" name="NWlat">
+			<br/>NWLong<input type="text" id="NWlong" name="NWlong">
+			<br/>
+			NELat<input type="text" id="NElat" name="NElat">
+			NELong<input type="text" id="NElong" name="NElong">
+			<br/>
+			SWLat<input type="text" id="SWlat" name="SWlat">
+			SWLong<input type="text" id="SWlong" name="SWlong">
+			<br/>
+			SELat<input type="text" id="SElat" name="SElat">
+			SELong<input type="text" id="SElong" name="SElong">
+
 			<input type="submit" value="search" class="search">
 		</form>
 	</div>
+
+	<button onclick="drawRec();">Draw Rectangle</button>
+		<button onclick="getCoor(document.getElementById('map'));">Get Coor</button>
+	<div id="map"></div>
 </body>
+
+
+	<script>
+		var north = 0;
+		function initMap() {
+			var map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: 42.318088, lng: -72.638125},
+				zoom: 15
+				});
+
+			var drawingManager = new google.maps.drawing.DrawingManager({
+				drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
+				drawingControl: true,
+				drawingControlOptions: {
+					position: google.maps.ControlPosition.TOP_LEFT,
+					drawingModes:['rectangle'] //['marker', 'circle', 'polygon', 'polyline', 'rectangle']
+			},
+				rectangleOptions: {
+					strokeColor : '#6c6c6c',
+	                strokeWeight : 3.5,
+	                fillColor : '#926239',
+	                fillOpacity : 0.6,
+	                editable: true,
+	                draggable: true
+				}
+			});
+
+			
+
+			drawingManager.setMap(map);
+
+			// google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+			google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
+	
+					var NElat = rectangle.getBounds().getNorthEast().lat();
+					var NElong = rectangle.getBounds().getNorthEast().lng();
+
+					var SWlat = rectangle.getBounds().getSouthWest().lat();
+					var SWlong = rectangle.getBounds().getSouthWest().lng();
+
+
+					var NWlat = NElat
+					var NWlong = SWlong
+
+					var SElat = SWlat
+					var SElong = NElong
+
+
+					console.log("NW: " + NWlat + ", " + NWlong );
+					console.log("NE: " + NElat + ", " + NElong );
+					console.log("SW: " + SWlat + ", " + SWlong );
+					console.log("SE: " + SElat + ", " + SElong );
+
+					document.getElementById("NWlat").value = NWlat;
+					document.getElementById("NWlong").value = NWlong;
+					document.getElementById("NElat").value =  NElat;
+					document.getElementById("NElong").value = NElong;
+					document.getElementById("SWlat").value = SWlat;
+					document.getElementById("SWlong").value = SWlong;
+					document.getElementById("SElat").value = SElat;
+					document.getElementById("SElong").value = SElong;
+				
+			});
+
+		}
+
+		
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUYd7CJshrPQBY2L1uvUH6es2gdWWt9oo&libraries=drawing&callback=initMap"
+	async defer></script>
+
+	</body>
+
 </html>
 

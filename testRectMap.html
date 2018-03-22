@@ -48,20 +48,20 @@
 				}
 			});
 
-			var rectangle1 = new google.maps.Rectangle({
-	          strokeColor: '#FF0000',
-	          strokeOpacity: 0.8,
-	          strokeWeight: 2,
-	          fillColor: '#FF0000',
-	          fillOpacity: 0.35,
-	          map: map,
-	          bounds: {
-	            north: 42.32869812355679,
-	            south:  42.30747608717733,
-	            east: -72.58911567687989,
-	            west: -72.68713432312012
-	          }
-	        });
+			// var rectangle1 = new google.maps.Rectangle({
+	  //         strokeColor: '#FF0000',
+	  //         strokeOpacity: 0.8,
+	  //         strokeWeight: 2,
+	  //         fillColor: '#FF0000',
+	  //         fillOpacity: 0.35,
+	  //         map: map,
+	  //         bounds: {
+	  //           north: 42.32869812355679,
+	  //           south:  42.30747608717733,
+	  //           east: -72.58911567687989,
+	  //           west: -72.68713432312012
+	  //         }
+	  //       });
 
 
 			drawingManager.setMap(map);
@@ -79,35 +79,35 @@
 			// });
 			google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
 				if (event.type == 'rectangle') {
-					// console.log(event.overlay.getBounds());
-					// var NElat = map.getBounds().getNorthEast().lat();
-					// var NElong = map.getBounds().getNorthEast().lng();
+					console.log(event.overlay.getBounds());
+					var NElat = map.getBounds().getNorthEast().lat();
+					var NElong = map.getBounds().getNorthEast().lng();
 
-					// var SWlat = map.getBounds().getSouthWest().lat();
-					// var SWlong = map.getBounds().getSouthWest().lng();
-
-
-					// var NWlat = NElat
-					// var NWlong = SWlong
-
-					// var SElat = SWlat
-					// var SElong = NElong
+					var SWlat = map.getBounds().getSouthWest().lat();
+					var SWlong = map.getBounds().getSouthWest().lng();
 
 
-					// console.log("NW: " + NWlat + ", " + NWlong );
-					// console.log("NE: " + NElat + ", " + NElong );
-					// console.log("SW: " + SWlat + ", " + SWlong );
-					// console.log("SE: " + SElat + ", " + SElong );
+					var NWlat = NElat
+					var NWlong = SWlong
+
+					var SElat = SWlat
+					var SElong = NElong
 
 
-					aNorth  =   map.getBounds().getNorthEast().lat();   
-				    aEast   =   map.getBounds().getNorthEast().lng();
-				    aSouth  =   map.getBounds().getSouthWest().lat();   
-				    aWest   =   map.getBounds().getSouthWest().lng();  
-				    console.log("north: " + aNorth);
-				    console.log("east: " + aEast);
-				    console.log("south: " + aSouth);
-				    console.log("west: " + aWest);
+					console.log("NW: " + NWlat + ", " + NWlong );
+					console.log("NE: " + NElat + ", " + NElong );
+					console.log("SW: " + SWlat + ", " + SWlong );
+					console.log("SE: " + SElat + ", " + SElong );
+
+
+					// aNorth  =   map.getBounds().getNorthEast().lat();   
+				 //    aEast   =   map.getBounds().getNorthEast().lng();
+				 //    aSouth  =   map.getBounds().getSouthWest().lat();   
+				 //    aWest   =   map.getBounds().getSouthWest().lng();  
+				 //    console.log("north: " + aNorth);
+				 //    console.log("east: " + aEast);
+				 //    console.log("south: " + aSouth);
+				 //    console.log("west: " + aWest);
 
 
 
