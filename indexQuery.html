@@ -33,12 +33,12 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 		<form id="tfnewsearch" method="get" action="DroneDirectoryMap.html">
 			FILE NAME
 			<br/>
-			<input type="text"  name="filename" maxlength="120" style="font-size: 25px;">
+			<input type="text"  name="filename" maxlength="120" style="font-size: 10px;">
 			<br/>
 			X-Coor
-			<input type="text"  name="xcoor" maxlength="120" style="font-size: 25px;">
+			<input type="text"  name="xcoor" maxlength="120" style="font-size: 10px;">
 			Y-Coor
-			<input type="text"  name="ycoor" maxlength="120" style="font-size: 25px;">
+			<input type="text"  name="ycoor" maxlength="120" style="font-size: 10px;">
 			<br/>
 			Range
 			<select name="range">
@@ -48,19 +48,16 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 				<option value="15">15 meters</option>
 				<option value="20">20 meters</option>
 			<br/><br/>
-			<br/>
-			<br/>
-			<br/>
-			</br>
+	
 			NWLat<input type="text" id="NWlat" name="NWlat">
-			<br/>NWLong<input type="text" id="NWlong" name="NWlong">
-			<br/>
+			NWLong<input type="text" id="NWlong" name="NWlong">
+			<!-- <br/> -->
 			NELat<input type="text" id="NElat" name="NElat">
 			NELong<input type="text" id="NElong" name="NElong">
-			<br/>
+			<!-- <br/> -->
 			SWLat<input type="text" id="SWlat" name="SWlat">
 			SWLong<input type="text" id="SWlong" name="SWlong">
-			<br/>
+			<!-- <br/> -->
 			SELat<input type="text" id="SElat" name="SElat">
 			SELong<input type="text" id="SElong" name="SElong">
 
@@ -68,14 +65,17 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 		</form>
 	</div>
 
-	<button onclick="drawRec();">Draw Rectangle</button>
+<!-- 	<button onclick="drawRec();">Draw Rectangle</button>
 		<button onclick="getCoor(document.getElementById('map'));">Get Coor</button>
+		<button onclick="removeRectangle();">Clear</button> -->
 	<div id="map"></div>
 </body>
 
 
 	<script>
 		var north = 0;
+		var drawingManager;
+		var rectangle = null;
 		function initMap() {
 			var map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: 42.318088, lng: -72.638125},
@@ -95,15 +95,35 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 	                fillColor : '#926239',
 	                fillOpacity : 0.6,
 	                editable: true,
-	                draggable: true
+	                draggable: false,
+	                zIndex: 1
 				}
 			});
 
-			
-
 			drawingManager.setMap(map);
 
-			// google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+			google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+				if (event.type == google.maps.drawing.OverlayType.RECTANGLE) {
+					if(rectangle != null)
+					rectangle.setMap(null);
+					rectangle = event.overlay;
+					var bounds = rectangle.getBounds();
+					console.log(bounds);
+					drawingManager.setDrawingMode(null);
+				}
+			});
+
+			google.maps.event.addListener(drawingManager, "drawingmode_changed", function() {
+				if ((drawingManager.getDrawingMode() == google.maps.drawing.OverlayType.RECTANGLE) && 
+					(rectangle != null))
+					rectangle.setMap(null);
+			});
+
+			google.maps.event.addListener(map, 'click', function() {    
+				if(rectangle != null)
+				rectangle.setMap(null);
+			});
+
 			google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
 	
 					var NElat = rectangle.getBounds().getNorthEast().lat();
@@ -118,12 +138,10 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 
 					var SElat = SWlat
 					var SElong = NElong
-
-
-					console.log("NW: " + NWlat + ", " + NWlong );
-					console.log("NE: " + NElat + ", " + NElong );
-					console.log("SW: " + SWlat + ", " + SWlong );
-					console.log("SE: " + SElat + ", " + SElong );
+					// console.log("NW: " + NWlat + ", " + NWlong );
+					// console.log("NE: " + NElat + ", " + NElong );
+					// console.log("SW: " + SWlat + ", " + SWlong );
+					// console.log("SE: " + SElat + ", " + SElong );
 
 					document.getElementById("NWlat").value = NWlat;
 					document.getElementById("NWlong").value = NWlong;
@@ -137,7 +155,6 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 			});
 
 		}
-
 		
 	</script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUYd7CJshrPQBY2L1uvUH6es2gdWWt9oo&libraries=drawing&callback=initMap"
