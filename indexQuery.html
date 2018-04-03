@@ -33,12 +33,12 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 		<form id="tfnewsearch" method="get" action="DroneDirectoryMap.html">
 			FILE NAME
 			<br/>
-			<input type="text"  name="filename" maxlength="120" style="font-size: 10px;">
+			<input type="text"  name="filename" maxlength="120" style="font-size: 10px; text-align: center;" placeholder="FILE NAME">
 			<br/>
 			X-Coor
-			<input type="text"  name="xcoor" maxlength="120" style="font-size: 10px;">
+			<input type="text"  name="xcoor" maxlength="120" style="font-size: 10px;text-align: center;" placeholder="X COOR">
 			Y-Coor
-			<input type="text"  name="ycoor" maxlength="120" style="font-size: 10px;">
+			<input type="text"  name="ycoor" maxlength="120" style="font-size: 10px;text-align: center;" placeholder="Y COOR">
 			<br/>
 			Range
 			<select name="range">
@@ -49,25 +49,19 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 				<option value="20">20 meters</option>
 			<br/><br/>
 	
-			NWLat<input type="text" id="NWlat" name="NWlat">
-			NWLong<input type="text" id="NWlong" name="NWlong">
-			<!-- <br/> -->
-			NELat<input type="text" id="NElat" name="NElat">
-			NELong<input type="text" id="NElong" name="NElong">
-			<!-- <br/> -->
-			SWLat<input type="text" id="SWlat" name="SWlat">
-			SWLong<input type="text" id="SWlong" name="SWlong">
-			<!-- <br/> -->
-			SELat<input type="text" id="SElat" name="SElat">
-			SELong<input type="text" id="SElong" name="SElong">
+			<input type="hidden" id="NWlat" name="NWlat">
+			<input type="hidden" id="NWlong" name="NWlong">
+			<input type="hidden" id="NElat" name="NElat">
+			<input type="hidden" id="NElong" name="NElong">
+			<input type="hidden" id="SWlat" name="SWlat">
+			<input type="hidden" id="SWlong" name="SWlong">
+			<input type="hidden" id="SElat" name="SElat">
+			<input type="hidden" id="SElong" name="SElong">
 
 			<input type="submit" value="search" class="search">
 		</form>
 	</div>
 
-<!-- 	<button onclick="drawRec();">Draw Rectangle</button>
-		<button onclick="getCoor(document.getElementById('map'));">Get Coor</button>
-		<button onclick="removeRectangle();">Clear</button> -->
 	<div id="map"></div>
 </body>
 
@@ -151,9 +145,7 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 					document.getElementById("SWlong").value = SWlong;
 					document.getElementById("SElat").value = SElat;
 					document.getElementById("SElong").value = SElong;
-				
 			});
-
 		}
 		
 	</script>
