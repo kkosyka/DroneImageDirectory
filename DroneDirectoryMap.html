@@ -9,6 +9,7 @@ Drone Directory Map
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="LeafletMarkerCluster/dist/MarkerCluster.css" />
@@ -90,18 +91,22 @@ Drone Directory Map
     // console.log(SWlat + "," + SWlong + " " + SElat + "," + SElong)
     // console.log(SWlat + " " + NWlat + " " + NWlong + " " + NElong)
     // console.log(filename)
-    var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs';
+
+    //http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:DroneImageDirectory&styles=&bbox=-72.6440200805664,42.3149795532227,-72.6378555297852,42.318962097168&width=768&height=496&srs=EPSG:4326&format=application/openlayers
+
+    //http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:test&styles=&bbox=-72.6440200805664,42.3149795532227,-72.6378555297852,42.318962097168&width=768&height=496&srs=EPSG:4326&format=application/openlayers
+    var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/ows'
     var defaultParameters = { 
         service : 'WFS',
         version : '2.0', 
         request : 'GetFeature',
-        typeName : 'DroneDirectory:DroneImageDirectory',
+        typeName : 'DroneDirectory:test', //'DroneDirectory:DroneImageDirectory', //'workspace:layername',
         maxFeatures: 1000000,
         format: 'image/png',
         transparent: true,
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
-        SrsName : 'EPSG:4326',
+        // SrsName : 'EPSG:4326',
         cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
 
         // cql_filter: "strToLowerCase(display_name) LIKE '%"+displayNameSearch+"%' AND strToLowerCase(dept_agg) LIKE '%"+deptAggSearch+"%' AND strToLowerCase(campus_address) LIKE '%"+building+"%' AND person_type_agg in ("+personTypeAggSearch +")"
@@ -110,7 +115,6 @@ Drone Directory Map
     var markerClusters = L.markerClusterGroup();
 
     var results = [];
-    // var markers = [];
     var parameters = L.Util.extend(defaultParameters);
     var URL = rootUrl + L.Util.getParamString(parameters);
     var count = 0;
@@ -156,7 +160,6 @@ Drone Directory Map
             results.push("<div style='-webkit-column-break-inside: avoid;'><b>FILE NAME: </b><a href='DroneDirectoryMap.html?filename="+feature.properties.filename+"&xcoor=&ycoor=&range=&NWlat=&NWlong=&NElat=&NElong=&SWlat=&SWlong=&SElat=&SElong='>"+ feature.properties.filename+"</a></br></br><b>DATE ADDED:</b> "+feature.properties.dateadded.replace("Z", "")+"</br><b>DATE TIME:</b> "+feature.properties.datetime+"</br><b>PATH:</b> "+feature.properties.path+"</br><b>X:</b> "+feature.properties.x+"</br><b>Y:</b> "+feature.properties.y+"</br><b>MAKE:</b> "+feature.properties.make+"</br><b>MODEL:</b> "+feature.properties.model+"</br></br></div>");
             layer.bindPopup("<b>File Name: </b>" + feature.properties.filename + "</br><b>PATH:</b> "+feature.properties.path+"</br><b>X-Y: </b>" + feature.properties.x + ", " + feature.properties.y + "</b>",
             popupOptions);
-            // markers.push(layer)
             markerClusters.addLayer( layer );
             }
         }).addTo(mymap);
@@ -166,20 +169,6 @@ Drone Directory Map
         }
     });
 
-
-
-    // mymap.addLayer( markerClusters );
-
-
-    // for ( var i = 0; i < markers.length; ++i )
-    // {
-    //   var popup = markers[i];
-
-    //   var m = L.marker( [markers[i].lat, markers[i].lng], {icon: myIcon} )
-    //                   .bindPopup( popup );
-
-    //   markerClusters.addLayer( m );
-    // }
 
     mymap.addLayer( markerClusters );
 
