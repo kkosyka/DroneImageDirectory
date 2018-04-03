@@ -142,6 +142,9 @@ def main():
 				header = []
 				values = []
 				header.extend(["FileName", "PATH", "X", "Y"])
+
+				print os.getcwd()
+
 				print "Location IMG: " + currPath
 				print "GPS Specs: "
 				lat, long, otherGPS = get_lat_lon(gps)
@@ -171,20 +174,24 @@ def main():
 				conn = psycopg2.connect("dbname='DroneImageDirectory' host='localhost' user='postgres' password='smithgis'") #(database information - database, host, user, password)
 				cur = conn.cursor()
 
+				picData = psycopg2.Binary(open(currPath, 'rb').read())
+
 				cur.execute("""INSERT INTO public."DroneImageDirectory"(DateAdded, FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID, 
 				 	GPSLongitudeRef, GPSAltitudeRef, LightSource, YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode, 
 				 	XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords, 
 				 	ExposureBiasValue, DateTimeOriginal, SceneType, Software, SubjectDistanceRange, WhiteBalance, CompressedBitsPerPixel, DateTimeDigitized, 
 				 	FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset,
 				 	ExifImageHeight, ISOSpeedRatings, Model, DateTime, Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment, 
-				 	ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio) VALUES
+				 	ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio, img) VALUES
 				 	(%s, %s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s,
-				 	%s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s, %s)""",(date, values[0],values[1],values[2],values[3],values[4],values[5],
+				 	%s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s, %s, %s)""",(date, values[0],values[1],values[2],values[3],values[4],values[5],
 				 		values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],values[15],values[16],values[17],
 				 	 	values[18],values[19],values[20],values[21],values[22],values[23],values[24],values[25],values[26],values[27],values[28],values[29],
 				 	 	values[30],values[31],values[32],values[33],values[34],values[35],values[36],values[37],values[38],values[39],values[40],values[41],
 					 	values[42],values[43],values[44],values[45],values[46],values[47],values[48],values[49],values[50],values[51],values[52],values[53],
-				 	 	values[54],values[55],values[56],values[57],values[58],values[59],values[60], values[61]))
+				 	 	values[54],values[55],values[56],values[57],values[58],values[59],values[60], values[61], picData))
+
+				#insert into my_table(bytea_data) select bytea_import('/my/file.name');
 
 				cur.execute("""UPDATE public."DroneImageDirectory" SET "coorgeom" = ST_GeomFromText('POINT('||y::text||' '||x::text||')', 4326)""")
 				conn.commit()
@@ -347,3 +354,25 @@ main()
 
 
 #Test
+
+
+
+
+
+"""
+
+POSTGRES BYTEA COL (https://dba.stackexchange.com/questions/1742/how-to-insert-file-data-into-a-postgresql-bytea-column)
+
+create or replace function bytea_import(p_path text, p_result out bytea) 
+                   language plpgsql as $$
+declare
+  l_oid oid;
+begin
+  select lo_import(p_path) into l_oid;
+  select lo_get(l_oid) INTO p_result;
+  perform lo_unlink(l_oid);
+end;$$;
+
+
+
+"""
