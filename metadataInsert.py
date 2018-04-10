@@ -375,4 +375,13 @@ end;$$;
 
 
 
+
+
+
+intersext
+
+SELECT *
+FROM public.droneimagedirectory1 as directory, public."campus_bldgs_2mBuff" as buildings
+WHERE ST_INTERSECTS(directory.coorgeom, buildings.geom)
+
 """
