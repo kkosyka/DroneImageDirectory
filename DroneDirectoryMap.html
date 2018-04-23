@@ -98,14 +98,14 @@ Drone Directory Map
         service : 'WFS',
         version : '1.3.0', 
         request : 'GetFeature',
-        typeName : 'DroneDirectory:DroneImageDirectory', //'DroneDirectory:DroneImageDirectory', //'workspace:layername',
+        typeName : 'DroneDirectory:DroneImageDirectory_bldg', //'DroneDirectory:DroneImageDirectory', //'workspace:layername',
         maxFeatures: 1000000,
         format: 'image/png',
         transparent: true,
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
         SrsName : 'EPSG:4326',
-        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
+        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong 
     };
 
     var markerClusters = L.markerClusterGroup();
@@ -152,8 +152,8 @@ Drone Directory Map
         onEachFeature: function (feature, layer) {
             count++;
             popupOptions = {maxWidth: 500};
-            results.push("<div style='-webkit-column-break-inside: avoid;'><b>FILE NAME: </b><a href='DroneDirectoryMap.html?filename="+feature.properties.filename+"&xcoor=&ycoor=&range=&NWlat=&NWlong=&NElat=&NElong=&SWlat=&SWlong=&SElat=&SElong='>"+ feature.properties.filename+"</a></br></br><b>DATE ADDED:</b> "+feature.properties.dateadded.replace("Z", "")+"</br><b>DATE TIME:</b> "+feature.properties.datetime+"</br><b>PATH:</b> "+feature.properties.path+"</br><b>X:</b> "+feature.properties.x+"</br><b>Y:</b> "+feature.properties.y+"</br><b>MAKE:</b> "+feature.properties.make+"</br><b>MODEL:</b> "+feature.properties.model+"</br></br></div>");
-            layer.bindPopup("<b>File Name: </b>" + feature.properties.filename + "</br><b>PATH:</b> "+feature.properties.path+"</br><b>X-Y: </b>" + feature.properties.x + ", " + feature.properties.y + "</b>",
+            results.push("<div style='-webkit-column-break-inside: avoid;'><b>FILE NAME: </b><a href='DroneDirectoryMap.html?filename="+feature.properties.filename+"&xcoor=&ycoor=&range=&NWlat=&NWlong=&NElat=&NElong=&SWlat=&SWlong=&SElat=&SElong='>"+ feature.properties.filename+"</a></br><b>DATE ADDED:</b> "+feature.properties.dateadded.replace("Z", "")+"</br><b>DATE TIME:</b> "+feature.properties.datetime+"</br><b>PATH:</b> "+feature.properties.path+"</br><b>X:</b> "+feature.properties.x+"</br><b>Y:</b> "+feature.properties.y+"</br><b>MAKE:</b> "+feature.properties.make+"</br><b>MODEL:</b> "+feature.properties.model+"</br><b>BUILDING: </b>"+feature.properties.building_name+"</br></br></div>");
+            layer.bindPopup("<b>File Name: </b>" + feature.properties.filename + "</br><b>PATH:</b> "+feature.properties.path+"</br><b>X-Y: </b>" + feature.properties.x + ", " + feature.properties.y + "</b><b>BUIDLING: </b>"+ feature.properties.building_name+"</b>",
             popupOptions);
             markerClusters.addLayer( layer );
             }
