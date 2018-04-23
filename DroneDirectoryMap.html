@@ -51,18 +51,8 @@ Drone Directory Map
     xcoor = values[1].split("=")[1];
 
     ycoor = values[2].split("=")[1];
-    range = values[3].split("=")[1];
-    if(range == "5"){
-        rangeMeter = 5;
-    }
-    else if (range == "10"){
-        rangeMeter = 10;
-    }
-    else if (range == "15"){
-        rangeMeter = 15;
-    }else{
-        rangeMeter = "1000";//to capture all
-    }
+    building = values[3].split("=")[1].split("+").join(" ").toLowerCase();
+    console.log(building)
 
     var NWlat = values[4].split("=")[1];
     console.log(NWlat == "");
@@ -105,7 +95,7 @@ Drone Directory Map
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
         SrsName : 'EPSG:4326',
-        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong 
+        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND strToLowerCase(building_name) = '" + building + "' AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
     };
 
     var markerClusters = L.markerClusterGroup();
@@ -153,7 +143,7 @@ Drone Directory Map
             count++;
             popupOptions = {maxWidth: 500};
             results.push("<div style='-webkit-column-break-inside: avoid;'><b>FILE NAME: </b><a href='DroneDirectoryMap.html?filename="+feature.properties.filename+"&xcoor=&ycoor=&range=&NWlat=&NWlong=&NElat=&NElong=&SWlat=&SWlong=&SElat=&SElong='>"+ feature.properties.filename+"</a></br><b>DATE ADDED:</b> "+feature.properties.dateadded.replace("Z", "")+"</br><b>DATE TIME:</b> "+feature.properties.datetime+"</br><b>PATH:</b> "+feature.properties.path+"</br><b>X:</b> "+feature.properties.x+"</br><b>Y:</b> "+feature.properties.y+"</br><b>MAKE:</b> "+feature.properties.make+"</br><b>MODEL:</b> "+feature.properties.model+"</br><b>BUILDING: </b>"+feature.properties.building_name+"</br></br></div>");
-            layer.bindPopup("<b>File Name: </b>" + feature.properties.filename + "</br><b>PATH:</b> "+feature.properties.path+"</br><b>X-Y: </b>" + feature.properties.x + ", " + feature.properties.y + "</b><b>BUIDLING: </b>"+ feature.properties.building_name+"</b>",
+            layer.bindPopup("<b>FILE NAME: </b>" + feature.properties.filename + "</br><b>PATH:</b> "+feature.properties.path+"</br><b>X-Y: </b>" + feature.properties.x + ", " + feature.properties.y + "</b></br><b>BUIDLING: </b>"+ feature.properties.building_name+"</b>",
             popupOptions);
             markerClusters.addLayer( layer );
             }
@@ -200,16 +190,16 @@ create table CampusDirectoryGeomCenter as
 
 
 TODO
-click point and cycle through the values in point
-how to handle w  values that overlap so we can see the 
+[DONE]click point and cycle through the values in point
+[DONE]how to handle w  values that overlap so we can see the 
 view image on the directory
-see if can get the interactive diff values
-clear rect
-filter on building
+[DONE]see if can get the interactive diff values
+[DONE]clear rect
+[DONE]filter on building
 
-blog of building directory - process, challeneges, advantages of this application, data
-documentation
-2P
-end of march
+[DONE]blog of building directory - process, challeneges, advantages of this application, data
+[DONE]documentation
+[DONE]2P
+[DONE]end of march
 
 -->
