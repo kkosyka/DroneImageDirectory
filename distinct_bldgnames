@@ -1,113 +1,111 @@
-"bldg_name"
-""
-"126 West Street"
-"10 Prospect Street"
-"Chiller Plant"
-"Ford Hall"
-"Burton Hall"
-"Baldwin House"
-"Sunnyside"
-"Laundry - Campus School"
-"Unity House"
-"Graduate House"
-"Wright Hall"
-"Seelye Hall"
-"8 College Lane"
-"Field House"
-"Talbot House"
-"Power Plant"
-"76 Elm Street"
-"94 State Street"
-"Grounds Garage"
-"Boat House"
-"Smith College Club"
-"146 Elm Street"
-"Equestrian Center"
-"Cushing House"
-"Tennis Hut"
-"St. Mary's of the Assumption"
-"Morris House"
-"Tenney House"
-"Capen Boiler"
-"President's House"
-"Haven House"
-"Jordan House"
-"King House"
-"Chase House"
-"College Hall"
-"Lamont House"
-"138 Elm Street"
-"Drew Hall (C.D.O.)"
-"Alumnae House"
-"Gill Hall"
-"Duckett House"
-"Facilities Management Garage"
-"Scales House"
-"Morrow House"
-"Garrison Hall"
-"Fine Arts Center"
-"Sessions House"
-"Stoddard Hall (and Annex)"
-"John M. Green Hall"
-"Pierce Hall"
-"Campus Center"
-"Hubbard House"
-"Emerson House"
-"Scott Gymnasium"
-"Helen Hills Chapel"
-"30 Belmont Avenue"
-"Parking Garage"
-"Chapin House"
-"Park Annex"
-"Albright House"
-"Capen Garage"
-"Hatfield Hall"
-"Sage Hall"
-"Gardiner House"
-"Friedman Complex (A,B,C,D)"
-"Research Greenhouse"
-"Northrop House"
-"Indoor Track & Tennis Facility"
-"Capen House"
-"Wesley House"
-"51 College Lane"
-"Park House"
-"Gillett House"
-"Hopkins House"
-"Lilly Hall"
-"Ainsworth Gymnasium"
-"Morgan Hall (Education Center)"
-"Davis Center"
-"Lyman Plant House"
-"McConnell Hall"
-"Lawrence House"
-"Conway House"
-"Wilder House"
-"Tilly Hall"
-"Tyler House"
-"Gables"
-"Bass Hall"
-"Wilson House"
-"Sessions Annex"
-"Comstock House"
-"Sabin-Reed Hall"
-"Parsons House"
-"Capen Annex"
-"Center for Health and Wellness"
-"Parsons Annex"
-"150 Elm Street"
-"Crew House"
-"Alumnae Gymnasium"
-"Dewey House"
-"Mendenhall Center fro Performing Arts"
-"Dawes House"
-"Clark Hall (Development Center)"
-"Mason Hall (Infirmary)"
-"Neilson Library"
-"Ziskind House"
-"Admissions"
-"Cutter House"
-"St. John's Episcopal Church"
-"Tyler Annex"
-"12-14 Henshaw Avenue"
-"Washburn House"
+<option>126 West Street</option>
+<option>10 Prospect Street</option>
+<option>Chiller Plant</option>
+<option>Ford Hall</option>
+<option>Burton Hall</option>
+<option>Baldwin House</option>
+<option>Sunnyside</option>
+<option>Laundry - Campus School</option>
+<option>Unity House</option>
+<option>Graduate House</option>
+<option>Wright Hall</option>
+<option>Seelye Hall</option>
+<option>8 College Lane</option>
+<option>Field House</option>
+<option>Talbot House</option>
+<option>Power Plant</option>
+<option>76 Elm Street</option>
+<option>94 State Street</option>
+<option>Grounds Garage</option>
+<option>Boat House</option>
+<option>Smith College Club</option>
+<option>146 Elm Street<option>
+<option>Equestrian Center</option>
+<option>Cushing House</option>
+<option>Tennis Hut</option>
+<option>St. Mary's of the Assumption</option>
+<option>Morris House</option>
+<option>Tenney House</option>
+<option>Capen Boiler</option>
+<option>President's House</option>
+<option>Haven House</option>
+<option>Jordan House</option>
+<option>King House</option>
+<option>Chase House</option>
+<option>College Hall</option>
+<option>Lamont House</option>
+<option>138 Elm Street</option>
+<option>Drew Hall (C.D.O.)</option>
+<option>Alumnae House</option>
+<option>Gill Hall</option>
+<option>Duckett House</option>
+<option>Facilities Management Garage</option>
+<option>Scales House</option>
+<option>Morrow House</option>
+<option>Garrison Hall</option>
+<option>Fine Arts Center</option>
+<option>Sessions House</option>
+<option>Stoddard Hall (and Annex)</option>
+<option>John M. Green Hall</option>
+<option>Pierce Hall</option>
+<option>Campus Center</option>
+<option>Hubbard House</option>
+<option>Emerson House</option>
+<option>Scott Gymnasium</option>
+<option>Helen Hills Chapel<option>
+<option>30 Belmont Avenue<option>
+<option>Parking Garage<option>
+<option>Chapin House<option>
+<option>Park Annex<option>
+<option>Albright House<option>
+<option>Capen Garage<option>
+<option>Hatfield Hall<option>
+<option>Sage Hall<option>
+<option>Gardiner House<option>
+<option>Friedman Complex (A,B,C,D)<option>
+<option>Research Greenhouse<option>
+<option>Northrop House<option>
+<option>Indoor Track & Tennis Facility<option>
+<option>Capen House<option>
+<option>Wesley House<option>
+<option>51 College Lane<option>
+<option>Park House<option>
+<option>Gillett House<option>
+<option>Hopkins House<option>
+<option>Lilly Hall<option>
+<option>Ainsworth Gymnasium<option>
+<option>Morgan Hall (Education Center)<option>
+<option>Davis Center<option>
+<option>Lyman Plant House<option>
+<option>McConnell Hall<option>
+<option>Lawrence House<option>
+<option>Conway House<option>
+<option>Wilder House<option>
+<option>Tilly Hall<option>
+<option>Tyler House<option>
+<option>Gables<option>
+<option>Bass Hall<option>
+<option>Wilson House<option>
+<option>Sessions Annex<option>
+<option>Comstock House<option>
+<option>Sabin-Reed Hall<option>
+<option>Parsons House<option>
+<option>Capen Annex<option>
+<option>Center for Health and Wellness<option>
+<option>Parsons Annex<option>
+<option>150 Elm Street<option>
+<option>Crew House<option>
+<option>Alumnae Gymnasium<option>
+<option>Dewey House<option>
+<option>Mendenhall Center fro Performing Arts<option>
+<option>Dawes House<option>
+<option>Clark Hall (Development Center)<option>
+<option>Mason Hall (Infirmary)<option>
+<option>Neilson Library<option>
+<option>Ziskind House<option>
+<option>Admissions<option>
+<option>Cutter House<option>
+<option>St. John's Episcopal Church<option>
+<option>Tyler Annex<option>
+<option>12-14 Henshaw Avenue<option>
+<option>Washburn House<option>
