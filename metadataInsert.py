@@ -373,15 +373,21 @@ begin
   perform lo_unlink(l_oid);
 end;$$;
 
+intersect
 
-
-
-
-
-intersext
+CREATE TABLE droneimagedirectory2 AS SELECT * FROM public.droneimagedirectory1
 
 SELECT *
-FROM public.droneimagedirectory1 as directory, public."campus_bldgs_2mBuff" as buildings
+FROM public.droneimagedirectory1 as directory, public.campusbldgs_2mbuff_wgs84 as buildings
 WHERE ST_INTERSECTS(directory.coorgeom, buildings.geom)
+""
+
+
+UPDATE public.droneimagedirectory1 as directory
+SET building_name = p.bldg_name
+FROM (
+    SELECT * FROM public.droneimagedirectory1 as directory, public.campusbldgs_2mbuff_wgs84 as buildings
+	WHERE ST_INTERSECTS(directory.coorgeom, buildings.geom)) p
+WHERE ST_INTERSECTS(directory.coorgeom, p.geom)
 
 """
