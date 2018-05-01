@@ -46,16 +46,18 @@ Drone Directory Map
     }).addTo(mymap);
 
     var values = window.location.href.split("?")[1].split("&");
+
     filename = values[0].split("=")[1].toLowerCase();
     filename = filename.split("%20").join(" ");
     xcoor = values[1].split("=")[1];
 
     ycoor = values[2].split("=")[1];
-    building = values[3].split("=")[1].split("+").join(" ").toLowerCase();
-    console.log(building)
+    building = "'" + values[3].split("=")[1].split("+").join(" ").toLowerCase() + "'";
+    if(building == "''"){
+    	building = "building_name"
+    }
 
     var NWlat = values[4].split("=")[1];
-    console.log(NWlat == "");
     if (NWlat == ""){
         NWlat = "x"
     }
@@ -80,10 +82,6 @@ Drone Directory Map
     // console.log(SWlat + "," + SWlong + " " + SElat + "," + SElong)
     // console.log(SWlat + " " + NWlat + " " + NWlong + " " + NElong)
 
-    //http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:DroneImageDirectory&styles=&bbox=-72.6440200805664,42.3149795532227,-72.6378555297852,42.318962097168&width=768&height=496&srs=EPSG:4326&format=application/openlayers
-
-    //http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:test&styles=&bbox=-72.6440200805664,42.3149795532227,-72.6378555297852,42.318962097168&width=768&height=496&srs=EPSG:4326&format=application/openlayers
-
     var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs'
     var defaultParameters = { 
         service : 'WFS',
@@ -96,11 +94,9 @@ Drone Directory Map
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
         SrsName : 'EPSG:4326',
-        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND strToLowerCase(building_name) = " + building + " AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
+        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND strToLowerCase(building_name) =  strToLowerCase("+ building+ ") AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
     };
-
     var markerClusters = L.markerClusterGroup();
-
     var results = [];
     var parameters = L.Util.extend(defaultParameters);
     var URL = rootUrl + L.Util.getParamString(parameters);
@@ -129,7 +125,6 @@ Drone Directory Map
                 opacity: 1
             };
         },
-        //create points instead of drop pins
         pointToLayer: function(feature, latlng){
             return new L.CircleMarker(latlng ,{
                 radius: 2,
@@ -140,10 +135,11 @@ Drone Directory Map
                 fillOpacity: 1
             });
         },
+
         onEachFeature: function (feature, layer) {
             count++;
             popupOptions = {maxWidth: 500};
-            results.push("<div style='-webkit-column-break-inside: avoid;'><b>FILE NAME: </b><a href='DroneDirectoryMap.html?filename="+feature.properties.filename+"&xcoor=&ycoor=&range=&NWlat=&NWlong=&NElat=&NElong=&SWlat=&SWlong=&SElat=&SElong='>"+ feature.properties.filename+"</a></br><b>DATE ADDED:</b> "+feature.properties.dateadded.replace("Z", "")+"</br><b>DATE TIME:</b> "+feature.properties.datetime+"</br><b>PATH:</b> "+feature.properties.path+"</br><b>X:</b> "+feature.properties.x+"</br><b>Y:</b> "+feature.properties.y+"</br><b>MAKE:</b> "+feature.properties.make+"</br><b>MODEL:</b> "+feature.properties.model+"</br><b>BUILDING: </b>"+feature.properties.building_name+"</br></br></div>");
+            results.push("<div style='-webkit-column-break-inside: avoid;'><b>FILE NAME: </b><a href='DroneDirectoryMap.html?filename="+feature.properties.filename+"&xcoor=&ycoor=&building=&NWlat=&NWlong=&NElat=&NElong=&SWlat=&SWlong=&SElat=&SElong='>"+ feature.properties.filename+"</a></br><b>DATE ADDED:</b> "+feature.properties.dateadded.replace("Z", "")+"</br><b>DATE TIME:</b> "+feature.properties.datetime+"</br><b>PATH:</b> "+feature.properties.path+"</br><b>X:</b> "+feature.properties.x+"</br><b>Y:</b> "+feature.properties.y+"</br><b>MAKE:</b> "+feature.properties.make+"</br><b>MODEL:</b> "+feature.properties.model+"</br><b>BUILDING: </b>"+feature.properties.building_name+"</br></br></div>");
             layer.bindPopup("<b>FILE NAME: </b>" + feature.properties.filename + "</br><b>PATH:</b> "+feature.properties.path+"</br><b>X-Y: </b>" + feature.properties.x + ", " + feature.properties.y + "</b></br><b>BUIDLING: </b>"+ feature.properties.building_name+"</b>",
             popupOptions);
             markerClusters.addLayer( layer );
@@ -162,7 +158,7 @@ Drone Directory Map
             "color": "#ff7800",
             "weight": 5,
             "opacity": 1,
-            onEachFeature: onEachFeature // allows you to access individual buildings (i.e. for popups)
+            onEachFeature: onEachFeature
         };
         var mylayer = L.geoJson(data).addTo(mymap, myStyle);
     }
