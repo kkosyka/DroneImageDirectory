@@ -83,7 +83,8 @@ Drone Directory Map
     //http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:DroneImageDirectory&styles=&bbox=-72.6440200805664,42.3149795532227,-72.6378555297852,42.318962097168&width=768&height=496&srs=EPSG:4326&format=application/openlayers
 
     //http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms?service=WMS&version=1.1.0&request=GetMap&layers=DroneDirectory:test&styles=&bbox=-72.6440200805664,42.3149795532227,-72.6378555297852,42.318962097168&width=768&height=496&srs=EPSG:4326&format=application/openlayers
-    var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wms'
+
+    var rootUrl = 'http://discovery.ad.smith.edu:8080/geoserver/DroneDirectory/wfs'
     var defaultParameters = { 
         service : 'WFS',
         version : '1.3.0', 
@@ -95,7 +96,7 @@ Drone Directory Map
         outputFormat :'text/javascript',
         format_options : 'callback:getJson',
         SrsName : 'EPSG:4326',
-        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND strToLowerCase(building_name) = '" + building + "' AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
+        cql_filter: "strToLowerCase(filename) LIKE '%"+filename+"%' AND strToLowerCase(building_name) = " + building + " AND x BETWEEN " +SWlat+ " AND " + NWlat+" AND y BETWEEN "+NWlong+" AND "+ NElong
     };
 
     var markerClusters = L.markerClusterGroup();
