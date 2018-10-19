@@ -1,4 +1,4 @@
-<!-- Kalynn Kosyka 
+<!-- Kalynn Kosyka
 indexQuery
 Allow the user to query on the name of the staff member and/or department the staff member is associated to
 
@@ -16,7 +16,7 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 		/* Always set the map height explicitly to define the size of the div
 		* element that contains the map. */
 		#map {
-			height: 70%;
+			height: 0%;
 		}
 		/* Optional: Makes the sample page fill the window. */
 		html, body {
@@ -24,7 +24,19 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 			margin: 0;
 			padding: 0;
 		}
+		#mapid { height: 90%; }
 	</style>
+	<script src="js/leaflet/leaflet.js"></script>
+<script src="js/main.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+	integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+	crossorigin=""/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+	<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+	integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+	crossorigin=""></script>
 
 <body>
 	<h1 style="text-align: center;">QUERY FOR DRONE IMAGE DIRECTORY</h1>
@@ -153,12 +165,12 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 				<option value = "Wilder House"> Wilder House</option>
 				<option value = "Wilson House"> Wilson House</option>
 				<option value = "Wright Hall"> Wright Hall</option>
-				<option value = "Ziskind House"> Ziskind House</option>	
+				<option value = "Ziskind House"> Ziskind House</option>
 			<br/><br/>
 
 
 
-	
+
 			<input type="hidden" id="NWlat" name="NWlat">
 			<input type="hidden" id="NWlong" name="NWlong">
 			<input type="hidden" id="NElat" name="NElat">
@@ -173,6 +185,7 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 	</div>
 
 	<div id="map"></div>
+	<div id="mapid"></div>
 </body>
 
 
@@ -218,18 +231,18 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 			});
 
 			google.maps.event.addListener(drawingManager, "drawingmode_changed", function() {
-				if ((drawingManager.getDrawingMode() == google.maps.drawing.OverlayType.RECTANGLE) && 
+				if ((drawingManager.getDrawingMode() == google.maps.drawing.OverlayType.RECTANGLE) &&
 					(rectangle != null))
 					rectangle.setMap(null);
 			});
 
-			google.maps.event.addListener(map, 'click', function() {    
+			google.maps.event.addListener(map, 'click', function() {
 				if(rectangle != null)
 				rectangle.setMap(null);
 			});
 
 			google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
-	
+
 					var NElat = rectangle.getBounds().getNorthEast().lat();
 					var NElong = rectangle.getBounds().getNorthEast().lng();
 
@@ -257,7 +270,44 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 					document.getElementById("SElong").value = SElong;
 			});
 		}
-		
+
+
+
+
+
+
+//	leaflet
+		var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+		//map types - Mapbox API
+		var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', zIndex: 2, attribution: mbAttr});
+		var	satellite   = L.tileLayer(mbUrl, {id: 'mapbox.satellite', zIndex: 2, attribution: mbAttr});
+		var	streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets', zIndex: 2,  attribution: mbAttr});
+
+		var baseLayers = {
+				"Streets": streets,
+				"Satellite": satellite
+		};
+		var droneImages = {
+				"Streets": streets,
+				"Satellite": satellite
+			};
+
+		//default settings for map
+		var mymap = L.map('mapid', {
+				center: [42.318088, -72.638125],
+				zoom: 16,
+				layers: [streets],
+				zIndex: 1,
+				drawControl: true
+		});
+		mymap.zoomControl.setPosition('topright');
+		//controls for displaying map types & drone images
+		L.control.layers(baseLayers, droneImages, {position: 'topright'}).addTo(mymap);
+
 	</script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUYd7CJshrPQBY2L1uvUH6es2gdWWt9oo&libraries=drawing&callback=initMap"
 	async defer></script>
@@ -265,4 +315,3 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 	</body>
 
 </html>
-
