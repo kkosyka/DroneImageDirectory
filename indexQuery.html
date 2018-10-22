@@ -36,6 +36,42 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 	integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
 	crossorigin=""></script>
 
+
+	<script src="LeafletDraw/src/Leaflet.draw.js"></script>
+<script src="LeafletDraw/src/Leaflet.Draw.Event.js"></script>
+
+<script src="LeafletDraw/src/edit/handler/Edit.Poly.js"></script>
+<script src="LeafletDraw/src/edit/handler/Edit.SimpleShape.js"></script>
+<script src="LeafletDraw/src/edit/handler/Edit.Rectangle.js"></script>
+<script src="LeafletDraw/src/edit/handler/Edit.Marker.js"></script>
+<script src="LeafletDraw/src/edit/handler/Edit.CircleMarker.js"></script>
+<script src="LeafletDraw/src/edit/handler/Edit.Circle.js"></script>
+
+<script src="LeafletDraw/src/draw/handler/Draw.Feature.js"></script>
+<script src="LeafletDraw/src/draw/handler/Draw.Polyline.js"></script>
+<script src="LeafletDraw/src/draw/handler/Draw.Polygon.js"></script>
+<script src="LeafletDraw/src/draw/handler/Draw.SimpleShape.js"></script>
+<script src="LeafletDraw/src/draw/handler/Draw.Rectangle.js"></script>
+<script src="LeafletDraw/src/draw/handler/Draw.Circle.js"></script>
+<script src="LeafletDraw/src/draw/handler/Draw.Marker.js"></script>
+<script src="LeafletDraw/src/draw/handler/Draw.CircleMarker.js"></script>
+
+<script src="LeafletDraw/src/ext/TouchEvents.js"></script>
+<script src="LeafletDraw/src/ext/LatLngUtil.js"></script>
+<script src="LeafletDraw/src/ext/GeometryUtil.js"></script>
+<script src="LeafletDraw/src/ext/LineUtil.Intersect.js"></script>
+<script src="LeafletDraw/src/ext/Polyline.Intersect.js"></script>
+<script src="LeafletDraw/src/ext/Polygon.Intersect.js"></script>
+
+<script src="LeafletDraw/src/Control.Draw.js"></script>
+<script src="LeafletDraw/src/Tooltip.js"></script>
+<script src="LeafletDraw/src/Toolbar.js"></script>
+
+<script src="LeafletDraw/src/draw/DrawToolbar.js"></script>
+<script src="LeafletDraw/src/edit/EditToolbar.js"></script>
+<script src="LeafletDraw/src/edit/handler/EditToolbar.Edit.js"></script>
+<script src="LeafletDraw/src/edit/handler/EditToolbar.Delete.js"></script>
+
 <body>
 	<h1 style="text-align: center;">QUERY FOR DRONE IMAGE DIRECTORY</h1>
 	<!-- HTML for SEARCH BAR -->
@@ -188,92 +224,6 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 
 
 	<script>
-		var north = 0;
-		var drawingManager;
-		var rectangle = null;
-		function initMap() {
-			var map = new google.maps.Map(document.getElementById('map'), {
-				center: {lat: 42.318088, lng: -72.638125},
-				zoom: 15
-				});
-
-			var drawingManager = new google.maps.drawing.DrawingManager({
-				drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
-				drawingControl: true,
-				drawingControlOptions: {
-					position: google.maps.ControlPosition.TOP_LEFT,
-					drawingModes:['rectangle'] //['marker', 'circle', 'polygon', 'polyline', 'rectangle']
-			},
-				rectangleOptions: {
-					strokeColor : '#6c6c6c',
-	                strokeWeight : 3.5,
-	                fillColor : '#926239',
-	                fillOpacity : 0.6,
-	                editable: true,
-	                draggable: false,
-	                zIndex: 1
-				}
-			});
-
-			drawingManager.setMap(map);
-
-			google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-				if (event.type == google.maps.drawing.OverlayType.RECTANGLE) {
-					if(rectangle != null)
-					rectangle.setMap(null);
-					rectangle = event.overlay;
-					var bounds = rectangle.getBounds();
-					console.log(bounds);
-					drawingManager.setDrawingMode(null);
-				}
-			});
-
-			google.maps.event.addListener(drawingManager, "drawingmode_changed", function() {
-				if ((drawingManager.getDrawingMode() == google.maps.drawing.OverlayType.RECTANGLE) &&
-					(rectangle != null))
-					rectangle.setMap(null);
-			});
-
-			google.maps.event.addListener(map, 'click', function() {
-				if(rectangle != null)
-				rectangle.setMap(null);
-			});
-
-			google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(rectangle) {
-
-					var NElat = rectangle.getBounds().getNorthEast().lat();
-					var NElong = rectangle.getBounds().getNorthEast().lng();
-
-					var SWlat = rectangle.getBounds().getSouthWest().lat();
-					var SWlong = rectangle.getBounds().getSouthWest().lng();
-
-
-					var NWlat = NElat
-					var NWlong = SWlong
-
-					var SElat = SWlat
-					var SElong = NElong
-					// console.log("NW: " + NWlat + ", " + NWlong );
-					// console.log("NE: " + NElat + ", " + NElong );
-					// console.log("SW: " + SWlat + ", " + SWlong );
-					// console.log("SE: " + SElat + ", " + SElong );
-
-					document.getElementById("NWlat").value = NWlat;
-					document.getElementById("NWlong").value = NWlong;
-					document.getElementById("NElat").value =  NElat;
-					document.getElementById("NElong").value = NElong;
-					document.getElementById("SWlat").value = SWlat;
-					document.getElementById("SWlong").value = SWlong;
-					document.getElementById("SElat").value = SElat;
-					document.getElementById("SElong").value = SElong;
-			});
-		}
-
-
-
-
-
-
 //	leaflet
 		var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
 			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -300,15 +250,68 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 				zoom: 16,
 				layers: [streets],
 				zIndex: 1,
-				drawControl: true
 		});
 		mymap.zoomControl.setPosition('topright');
-		//controls for displaying map types & drone images
 		L.control.layers(baseLayers, droneImages, {position: 'topright'}).addTo(mymap);
+		//
+		var editableLayers = new L.FeatureGroup();
+		mymap.addLayer(editableLayers);
+
+		var drawPluginOptions = {
+		  position: 'topright',
+		  draw: {
+			    polyline: false,
+			    circle: false,
+			    polygon: false,
+			    marker: false,
+					circlemarker: false,
+			    rectangle: {
+               shapeOptions: {
+                   clickable: true
+               }
+           }
+		    },
+		  edit: {
+		    featureGroup: editableLayers, //REQUIRED!!
+		    remove: false
+		  }
+		};
+
+		// Initialise the draw control and pass it the FeatureGroup of editable layers
+		var drawControl = new L.Control.Draw(drawPluginOptions);
+		mymap.addControl(drawControl);
+
+		L.EditToolbar.Delete.include({
+		    removeAllLayers: true
+		});
+
+		var editableLayers = new L.FeatureGroup();
+		mymap.addLayer(editableLayers);
+
+		mymap.on('draw:created', function(e) {
+		  var type = e.layerType,
+		      layer = e.layer;
+
+					document.getElementById("NWlat").value = layer.getBounds().getNorthWest().lat;
+					document.getElementById("NWlong").value = layer.getBounds().getNorthWest().lng;
+					document.getElementById("NElat").value =  layer.getBounds().getNorthEast().lat;
+					document.getElementById("NElong").value = layer.getBounds().getNorthEast().lng;
+					document.getElementById("SWlat").value = layer.getBounds().getSouthWest().lat;
+					document.getElementById("SWlong").value = layer.getBounds().getSouthWest().lng;
+					document.getElementById("SElat").value = layer.getBounds().getSouthEast().lat;
+					document.getElementById("SElong").value = layer.getBounds().getSouthEast().lng;
+
+		  // if (type === 'rectangle') {
+		  //   layer.bindPopup("Your rectangle!  \nNE: " +layer.getBounds().getNorthWest()+
+			// 																	 "\nNW: " +layer.getBounds().getNorthEast() +
+			// 																   "\nSE: " +layer.getBounds().getSouthEast() +
+			// 																   "\nSW: " +layer.getBounds().getSouthWest());
+		  // }
+
+		  editableLayers.addLayer(layer);
+		});
 
 	</script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUYd7CJshrPQBY2L1uvUH6es2gdWWt9oo&libraries=drawing&callback=initMap"
-	async defer></script>
 
 	</body>
 
