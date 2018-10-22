@@ -1,6 +1,4 @@
 <!-- Kalynn Kosyka
-indexQuery
-Allow the user to query on the name of the staff member and/or department the staff member is associated to
 
 TODO
 use dropdown for department? -> many departments... maybe dropdown for academic and type for other...
@@ -36,7 +34,6 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 	integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
 	crossorigin=""></script>
 
-
 	<script src="LeafletDraw/src/Leaflet.draw.js"></script>
 <script src="LeafletDraw/src/Leaflet.Draw.Event.js"></script>
 
@@ -46,7 +43,6 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 <script src="LeafletDraw/src/edit/handler/Edit.Marker.js"></script>
 <script src="LeafletDraw/src/edit/handler/Edit.CircleMarker.js"></script>
 <script src="LeafletDraw/src/edit/handler/Edit.Circle.js"></script>
-
 <script src="LeafletDraw/src/draw/handler/Draw.Feature.js"></script>
 <script src="LeafletDraw/src/draw/handler/Draw.Polyline.js"></script>
 <script src="LeafletDraw/src/draw/handler/Draw.Polygon.js"></script>
@@ -55,18 +51,15 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 <script src="LeafletDraw/src/draw/handler/Draw.Circle.js"></script>
 <script src="LeafletDraw/src/draw/handler/Draw.Marker.js"></script>
 <script src="LeafletDraw/src/draw/handler/Draw.CircleMarker.js"></script>
-
 <script src="LeafletDraw/src/ext/TouchEvents.js"></script>
 <script src="LeafletDraw/src/ext/LatLngUtil.js"></script>
 <script src="LeafletDraw/src/ext/GeometryUtil.js"></script>
 <script src="LeafletDraw/src/ext/LineUtil.Intersect.js"></script>
 <script src="LeafletDraw/src/ext/Polyline.Intersect.js"></script>
 <script src="LeafletDraw/src/ext/Polygon.Intersect.js"></script>
-
 <script src="LeafletDraw/src/Control.Draw.js"></script>
 <script src="LeafletDraw/src/Tooltip.js"></script>
 <script src="LeafletDraw/src/Toolbar.js"></script>
-
 <script src="LeafletDraw/src/draw/DrawToolbar.js"></script>
 <script src="LeafletDraw/src/edit/EditToolbar.js"></script>
 <script src="LeafletDraw/src/edit/handler/EditToolbar.Edit.js"></script>
@@ -201,10 +194,6 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 				<option value = "Wright Hall"> Wright Hall</option>
 				<option value = "Ziskind House"> Ziskind House</option>
 			<br/><br/>
-
-
-
-
 			<input type="hidden" id="NWlat" name="NWlat">
 			<input type="hidden" id="NWlong" name="NWlong">
 			<input type="hidden" id="NElat" name="NElat">
@@ -240,8 +229,8 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 				"Satellite": satellite
 		};
 		var droneImages = {
-				"Streets": streets,
-				"Satellite": satellite
+				// "Streets": streets,
+				// "Satellite": satellite
 			};
 
 		//default settings for map
@@ -312,7 +301,5 @@ use dropdown for department? -> many departments... maybe dropdown for academic 
 		});
 
 	</script>
-
 	</body>
-
 </html>
