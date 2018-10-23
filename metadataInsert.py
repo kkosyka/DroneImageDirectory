@@ -176,8 +176,11 @@ def main():
 				cur = conn.cursor()
 
 				# picData = psycopg2.Binary(open(currPath, 'rb').read())
-				imageData = urllib2.urlopen(currPath).read()
+				imageData = open(currPath, 'rb').read()
 				picData = psycopg2.Binary(imageData)
+
+				print(len(values))
+
 				cur.execute("""INSERT INTO public."DroneImageDirectory"(DateAdded, FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID,
 				 	GPSLongitudeRef, GPSAltitudeRef, LightSource, YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode,
 				 	XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords,
