@@ -10,6 +10,7 @@ import psycopg2
 from psycopg2.extras import Json
 import json
 import datetime
+import urllib2
 
 def getGPS(pathImg):
 	exif_data = {}
@@ -174,8 +175,9 @@ def main():
 				conn = psycopg2.connect("dbname='DroneImageDirectory' host='localhost' user='postgres' password='smithgis'") #(database information - database, host, user, password)
 				cur = conn.cursor()
 
-				picData = psycopg2.Binary(open(currPath, 'rb').read())
-
+				# picData = psycopg2.Binary(open(currPath, 'rb').read())
+				imageData = urllib2.urlopen(currPath).read()
+				picData = psycopg2.Binary(imageData)
 				cur.execute("""INSERT INTO public."DroneImageDirectory"(DateAdded, FileName, PATH, X, Y, GPSLongitude, GPSLatitudeRef, GPSAltitude, GPSLatitude, GPSVersionID,
 				 	GPSLongitudeRef, GPSAltitudeRef, LightSource, YResolution, ResolutionUnit, FlashPixVersion, Make, Flash, SceneCaptureType, GPSInfo, MeteringMode,
 				 	XResolution, Contrast, Saturation, MakerNote, ExposureProgram, FocalLengthIn35mmFilm, ShutterSpeedValue, ColorSpace, ExifImageWidth, XPKeywords,
