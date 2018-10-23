@@ -184,7 +184,7 @@ def main():
 				 	ExposureBiasValue, DateTimeOriginal, SceneType, Software, SubjectDistanceRange, WhiteBalance, CompressedBitsPerPixel, DateTimeDigitized,
 				 	FNumber, CustomRendered, ApertureValue, FocalLength, ExposureMode, ImageDescription, ComponentsConfiguration, SubjectDistance, ExifOffset,
 				 	ExifImageHeight, ISOSpeedRatings, Model, DateTime, Orientation, ExposureTime, FileSource, MaxApertureValue, XPComment,
-				 	ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio, img) VALUES
+				 	ExifInteroperabilityOffset, Sharpness, ExposureIndex, GainControl, YCbCrPositioning, DigitalZoomRatio, ImageData) VALUES
 				 	(%s, %s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s,
 				 	%s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s,%s,%s, %s, %s, %s,%s, %s, %s)""",(date, values[0],values[1],values[2],values[3],values[4],values[5],
 				 		values[6],values[7],values[8],values[9],values[10],values[11],values[12],values[13],values[14],values[15],values[16],values[17],
